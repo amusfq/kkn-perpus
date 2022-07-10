@@ -4,7 +4,7 @@ type Props = {}
 
 export default function Hero({}: Props) {
   return (
-    <div className="px-4 md:px-12 flex flex-col md:flex-row md:space-x-12">
+    <div className="px-4 md:px-12 flex flex-col md:flex-row md:space-x-12 mt-24">
       <div className="w-full md:w-7/12 py-12 flex items-center">
         <div className="space-y-4">
           <h1 className="font-bold text-2xl md:text-5xl">
