@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Axios from "../../api";
 import Category from "../../components/Page/Home/Category";
 import Hero from "../../components/Page/Home/Hero";
