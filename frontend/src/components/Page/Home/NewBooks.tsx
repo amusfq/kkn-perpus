@@ -26,11 +26,19 @@ export default function NewBooks({ data }: Props) {
           >
             {data.data.slice(0, 4).map((book) => (
               <SwiperSlide key={book.id}>
-                <img
-                  src={book.cover}
-                  alt={book.title}
-                  className="h-full w-full object-cover object-center"
-                />
+                <div className="relative">
+                  <div className="book-cover" />
+                  <img
+                    key={book.id}
+                    src={book.cover}
+                    alt={book.title}
+                    className="h-[30rem] w-full object-scale-down object-center border -z-[1]"
+                    onError={(target: any) => {
+                      target.currentTarget.onerror = null;
+                      target.currentTarget.src = "/no-cover.webp";
+                    }}
+                  />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -44,16 +52,21 @@ export default function NewBooks({ data }: Props) {
         </p>
         <div className="grid grid-cols-2 gap-4">
           {data &&
-            data.data
-              .slice(0, 4)
-              .map((book) => (
+            data.data.slice(0, 4).map((book) => (
+              <div className="relative bg-gray-50">
+                <div className="book-cover  " />
                 <img
                   key={book.id}
                   src={book.cover}
                   alt={book.title}
-                  className="aspect-square w-full object-scale-down object-center"
+                  className="h-[30rem] w-full object-cover object-center border -z-[1]"
+                  onError={(target: any) => {
+                    target.currentTarget.onerror = null;
+                    target.currentTarget.src = "/no-cover.webp";
+                  }}
                 />
-              ))}
+              </div>
+            ))}
         </div>
       </div>
     </div>

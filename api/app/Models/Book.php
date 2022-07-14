@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 
 class Book extends Model
 {
@@ -11,6 +13,7 @@ class Book extends Model
 
     protected $fillable = [
         'title',
+        'cover',
         'author_id',
         'published_date',
         'quantity',
@@ -18,6 +21,11 @@ class Book extends Model
         'shelf_id',
         'publisher_id'
     ];
+
+    public function getCoverAttribute($value)
+    {
+            return URL::to("api/$value");
+    }
 
     public function author()
     {

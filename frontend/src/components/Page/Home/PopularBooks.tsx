@@ -60,11 +60,19 @@ export default function PopularBooks({}: Props) {
             {data.data.map((book) => (
               <SwiperSlide key={book.id}>
                 <div className="text-center space-y-2">
-                  <img
-                    src={book.cover}
-                    alt={book.title}
-                    className="h-full w-auto mx-auto object-scale-down object-center"
-                  />
+                  <div className="relative">
+                    <div className="book-cover" />
+                    <img
+                      key={book.id}
+                      src={book.cover}
+                      alt={book.title}
+                      className="h-[30rem] w-full object-scale-down object-center border -z-[1]"
+                      onError={(target: any) => {
+                        target.currentTarget.onerror = null;
+                        target.currentTarget.src = "/no-cover.webp";
+                      }}
+                    />
+                  </div>
                   <p className="font-medium md:text-xl">{book.title}</p>
                 </div>
               </SwiperSlide>

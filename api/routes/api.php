@@ -6,13 +6,15 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\ResourceController;
 
-Route::get('/ping', function (Request $request) {
+Route::get('ping', function (Request $request) {
     return response()->json(['meta' => [
         'ip' => $request->ips(),
         'userAgent' => $request->userAgent(),
     ],'data' => 'pong', 'success' => TRUE]);
 });
+Route::get('images/{filename}', [ResourceController::class, 'image']);
 
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
@@ -28,6 +30,7 @@ Route::prefix('author')->group(function () {
 
 Route::prefix('book')->group(function () {
     Route::get('/', [BookController::class, 'index']);
-    Route::get('/recent', [BookController::class, 'Recent']);
-    Route::get('/views', [BookController::class, 'MostView']);
+    Route::post('/', [BookController::class, 'create']);
+    Route::get('/recent', [BookController::class, 'recent']);
+    Route::get('/views', [BookController::class, 'mostView']);
 });

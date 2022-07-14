@@ -29,11 +29,18 @@ export default function Hero({ data }: Props) {
       </div>
       <div className="w-full md:w-5/12">
         {data && data.data.length > 0 && (
-          <img
-            src={data.data[0].cover}
-            alt=""
-            className="aspect-square w-full object-scale-down object-center"
-          />
+          <div className="relative">
+            <div className="book-cover" />
+            <img
+              src={data.data[0].cover}
+              alt={data.data[0].title}
+              className="h-[30rem] w-auto object-cover object-center -z-[1] border"
+              onError={(target: any) => {
+                target.currentTarget.onerror = null;
+                target.currentTarget.src = "/no-cover.webp";
+              }}
+            />
+          </div>
         )}
       </div>
     </div>
