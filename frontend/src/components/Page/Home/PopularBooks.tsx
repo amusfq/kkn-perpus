@@ -6,14 +6,21 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Axios from "../../../api";
 import { BookPagination } from "../../../models/BookType";
+import useStore from "../../../../store/store";
 
 type Props = {};
 
 export default function PopularBooks({}: Props) {
+  const {setIsLoading} = useStore();
   const [data, setData] = useState<BookPagination>();
 
   const getData = () => {
-    Axios.get("/book/views")
+    setIsLoading(true);
+    Axios.get("/book", {
+      params: {
+        filter: 'popular'
+      }
+    })
       .then((res) => {
         const response = res.data;
         setData(response.data);
@@ -22,7 +29,7 @@ export default function PopularBooks({}: Props) {
         const response = err.response;
         console.log(response);
         toast.error("Gagal mengambil data buku popular", { theme: "colored" });
-      });
+      }).then(() => setIsLoading(false));
   };
 
   useEffect(() => {

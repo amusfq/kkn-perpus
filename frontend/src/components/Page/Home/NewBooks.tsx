@@ -61,7 +61,7 @@ export default function NewBooks({ data }: Props) {
         <div className="grid grid-cols-2 gap-4">
           {data &&
             data.data.slice(0, 4).map((book) => (
-              <div className="space-y-2">
+              <div key={book.id} className="space-y-2">
                 <div className="relative bg-gray-50">
                   <div className="book-cover  " />
                   <img

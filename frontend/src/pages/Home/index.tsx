@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import useStore from "../../../store/store";
 import Axios from "../../api";
 import Category from "../../components/Page/Home/Category";
 import Hero from "../../components/Page/Home/Hero";
@@ -10,10 +11,12 @@ import { BookPagination } from "../../models/BookType";
 type Props = {};
 
 export default function Home({}: Props) {
+  const { setIsLoading } = useStore();
   const [data, setData] = useState<BookPagination>();
 
   const getData = () => {
-    Axios.get("/book/recent")
+    setIsLoading(true);
+    Axios.get("/book")
       .then((res) => {
         const response = res.data;
         setData(response.data);
@@ -22,7 +25,8 @@ export default function Home({}: Props) {
         const response = err.response;
         console.log(response);
         toast.error("Gagal mengambil data buku baru", { theme: "colored" });
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -30,7 +34,7 @@ export default function Home({}: Props) {
   }, []);
 
   return (
-    <div className="space-y-32 md:mt-16">
+    <div className="space-y-32">
       <Hero />
       <Category />
       <NewBooks data={data} />

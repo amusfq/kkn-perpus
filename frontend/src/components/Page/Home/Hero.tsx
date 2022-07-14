@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import useStore from "../../../../store/store";
 import Axios from "../../../api";
 import BookType from "../../../models/BookType";
 
 type Props = {};
 
 export default function Hero({}: Props) {
+  const { setIsLoading } = useStore();
   const [data, setData] = useState<BookType>();
 
   const getData = () => {
+    setIsLoading(true);
     Axios.get("/book/random")
       .then((res) => {
         const response = res.data;
@@ -18,7 +21,8 @@ export default function Hero({}: Props) {
         const response = err.response;
         console.log(response);
         toast.error("Gagal mengambil data buku baru", { theme: "colored" });
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {

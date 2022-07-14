@@ -64,14 +64,14 @@ export default function Category({}: Props) {
         >
           {data.map((category, idx) => (
             <SwiperSlide key={idx}>
-              <div className="text-center space-y-2">
+              <button className="text-center space-y-2">
                 <img
                   src={category.image}
                   alt=""
                   className="h-16 md:h-24 w-auto aspect-square mx-auto"
                 />
                 <p className="font-bold text-xl">{category.name}</p>
-              </div>
+              </button>
             </SwiperSlide>
           ))}
         </Swiper>

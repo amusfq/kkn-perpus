@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\AuthController;
 
 Route::get('ping', function (Request $request) {
     return response()->json(['meta' => [
@@ -14,24 +15,31 @@ Route::get('ping', function (Request $request) {
         'userAgent' => $request->userAgent(),
     ],'data' => 'pong', 'success' => TRUE]);
 });
+
 Route::get('images/{filename}', [ResourceController::class, 'image']);
 
-Route::prefix('user')->group(function () {
-    Route::get('/', [UserController::class, 'index']);
+Route::controller(AuthController::class)->group(function () {
+    Route::get('profile', 'profile')->name('profile');
+    Route::post('login', 'login')->name('profile');
+    Route::post('register', 'register')->name('register');
+    Route::post('logout', 'logout')->name('logout');
+    Route::post('refresh', 'refresh')->name('refresh');
 });
 
-Route::prefix('publisher')->group(function () {
-    Route::get('/', [PublisherController::class, 'index']);
+Route::prefix('user')->controller(UserController::class)->group(function () {
+    Route::get('/', 'index');
 });
 
-Route::prefix('author')->group(function () {
-    Route::get('/', [AuthorController::class, 'index']);
+Route::prefix('publisher')->controller(PublisherController::class)->group(function () {
+    Route::get('/', 'index');
 });
 
-Route::prefix('book')->group(function () {
-    Route::get('/', [BookController::class, 'index']);
-    Route::post('/', [BookController::class, 'create']);
-    Route::get('/recent', [BookController::class, 'recent']);
-    Route::get('/views', [BookController::class, 'mostView']);
-    Route::get('/random', [BookController::class, 'random']);
+Route::prefix('author')->controller(AuthorController::class)->middleware('jwt.verify')->group(function () {
+    Route::get('/', 'index');
+});
+
+Route::prefix('book')->controller(BookController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::post('/', 'create');
+    Route::get('/random', 'random');
 });

@@ -5,88 +5,53 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Book;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
 
 class BookController extends Controller
 {
     public function index(Request $request) {
+        $data = "";
+        $status = TRUE;
+        $statusCode = 200;
+        $errors = [];
+
         $data = Book::with('author', 'shelf', 'publisher')
                     ->withCount('views');
         $perPage = 10;
         if ($request->filled('per_page')) $perPage = $request->query('per_page');
         if ($request->filled('q')) {
             $q = $request->query('q');
-            $data->where('title', 'like', "%$q%")
+            $data = $data->where('title', 'like', "%$q%")
             ->orWhere('isbn', 'like', "%$q%");
         }
-        $data->orderBy('created_at', 'desc');
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => $data->paginate($perPage), 
-            'success' => TRUE
-        ]);
+        if ($request->filled('filter')) {
+            $filter = $request->query('filter');
+            if ($filter == 'popular') {
+                $data = $data->orderBy('views_count', 'desc');
+            } else {
+                $data = $data->orderBy('created_at', 'desc');
+            }
+        } else {
+            $data = $data->orderBy('created_at', 'desc');
+        }
+        $data = $data->paginate($perPage);
+            
+        return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
     public function random(Request $request) {
-        $data = Book::with('author', 'shelf', 'publisher')
-                    ->withCount('views')->inRandomOrder();
+        $data = "";
+        $status = TRUE;
+        $statusCode = 200;
+        $errors = [];
         
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => $data->first(), 
-            'success' => TRUE
-        ]);
-    }
-
-    public function recent(Request $request) {
         $data = Book::with('author', 'shelf', 'publisher')
-                    ->withCount('views');
-        $perPage = 10;
-        if ($request->filled('per_page')) $perPage = $request->query('per_page');
-        if ($request->filled('q')) {
-            $q = $request->query('q');
-            $data->where('title', 'like', "%$q%")
-            ->orWhere('isbn', 'like', "%$q%");
-        }
-        $data->orderBy('created_at', 'desc');
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => $data->paginate($perPage), 
-            'success' => TRUE
-        ]);
-    }
-
-    public function mostView(Request $request) {
-        $data = Book::with('author', 'shelf', 'publisher')
-                    ->withCount('views');
-        $perPage = 10;
-        if ($request->filled('per_page')) $perPage = $request->query('per_page');
-        if ($request->filled('q')) {
-            $q = $request->query('q');
-            $data->where('title', 'like', "%$q%")
-            ->orWhere('isbn', 'like', "%$q%");
-        }
-        $data->orderBy('views_count', 'desc');
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => $data->paginate($perPage), 
-            'success' => TRUE
-        ]);
+            ->withCount('views')->inRandomOrder()->first();   
+            
+        return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
     public function create(Request $request) {
