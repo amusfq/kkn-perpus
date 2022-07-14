@@ -32,7 +32,7 @@ export default function NewBooks({ data }: Props) {
                     key={book.id}
                     src={book.cover}
                     alt={book.title}
-                    className="h-[30rem] w-full object-scale-down object-center border -z-[1]"
+                    className="h-auto md:h-[30rem] w-full object-scale-down object-center border -z-[1]"
                     onError={(target: any) => {
                       target.currentTarget.onerror = null;
                       target.currentTarget.src = "/no-cover.jpg";
@@ -59,7 +59,7 @@ export default function NewBooks({ data }: Props) {
                   key={book.id}
                   src={book.cover}
                   alt={book.title}
-                  className="h-[30rem] w-full object-cover object-center border -z-[1]"
+                  className="h-auto md:h-[30rem] w-full object-cover object-center border -z-[1]"
                   onError={(target: any) => {
                     target.currentTarget.onerror = null;
                     target.currentTarget.src = "/no-cover.jpg";

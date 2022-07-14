@@ -66,7 +66,7 @@ export default function PopularBooks({}: Props) {
                       key={book.id}
                       src={book.cover}
                       alt={book.title}
-                      className="h-[30rem] w-full object-scale-down object-center border -z-[1]"
+                      className="h-44 md:h-[30rem] w-full object-scale-down object-center border -z-[1]"
                       onError={(target: any) => {
                         target.currentTarget.onerror = null;
                         target.currentTarget.src = "/no-cover.jpg";

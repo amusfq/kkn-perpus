@@ -27,7 +27,7 @@ export default function Hero({ data }: Props) {
           </div>
         </div>
       </div>
-      <div className="w-full md:w-5/12">
+      <div className="w-full md:w-5/12 px-8 md:px-0">
         {data && data.data.length > 0 && (
           <div className="relative">
             <div className="book-cover" />
