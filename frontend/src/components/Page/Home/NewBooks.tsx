@@ -26,18 +26,26 @@ export default function NewBooks({ data }: Props) {
           >
             {data.data.slice(0, 4).map((book) => (
               <SwiperSlide key={book.id}>
-                <div className="relative">
-                  <div className="book-cover select-none pointer-events-none" />
-                  <img
-                    key={book.id}
-                    src={book.cover}
-                    alt={book.title}
-                    className="h-auto md:h-[30rem] w-full object-scale-down object-center border -z-[1]"
-                    onError={(target: any) => {
-                      target.currentTarget.onerror = null;
-                      target.currentTarget.src = "/no-cover.jpg";
-                    }}
-                  />
+                <div className="space-y-2 bg-white">
+                  <div className="relative h-auto md:h-[30rem]">
+                    <div className="book-cover select-none pointer-events-none" />
+                    <img
+                      key={book.id}
+                      src={book.cover}
+                      alt={book.title}
+                      className="h-auto md:h-[30rem] w-full object-scale-down object-center border -z-[1]"
+                      onError={(target: any) => {
+                        target.currentTarget.onerror = null;
+                        target.currentTarget.src = "/no-cover.jpg";
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-center  text-gray-500">
+                      {book.author.fullname}
+                    </p>
+                    <p className="text-center font-medium">{book.title}</p>
+                  </div>
                 </div>
               </SwiperSlide>
             ))}
@@ -53,18 +61,26 @@ export default function NewBooks({ data }: Props) {
         <div className="grid grid-cols-2 gap-4">
           {data &&
             data.data.slice(0, 4).map((book) => (
-              <div className="relative bg-gray-50">
-                <div className="book-cover  " />
-                <img
-                  key={book.id}
-                  src={book.cover}
-                  alt={book.title}
-                  className="h-auto md:h-[30rem] w-full object-cover object-center border -z-[1]"
-                  onError={(target: any) => {
-                    target.currentTarget.onerror = null;
-                    target.currentTarget.src = "/no-cover.jpg";
-                  }}
-                />
+              <div className="space-y-2">
+                <div className="relative bg-gray-50">
+                  <div className="book-cover  " />
+                  <img
+                    key={book.id}
+                    src={book.cover}
+                    alt={book.title}
+                    className="h-auto md:h-[30rem] w-full object-cover object-center border -z-[1]"
+                    onError={(target: any) => {
+                      target.currentTarget.onerror = null;
+                      target.currentTarget.src = "/no-cover.jpg";
+                    }}
+                  />
+                </div>
+                <div>
+                  <p className="text-center  text-gray-500">
+                    {book.author.fullname}
+                  </p>
+                  <p className="text-center font-medium">{book.title}</p>
+                </div>
               </div>
             ))}
         </div>

@@ -73,7 +73,12 @@ export default function PopularBooks({}: Props) {
                       }}
                     />
                   </div>
-                  <p className="font-medium md:text-xl">{book.title}</p>
+                  <div>
+                    <p className="text-center  text-gray-500">
+                      {book.author.fullname}
+                    </p>
+                    <p className="font-medium">{book.title}</p>
+                  </div>
                 </div>
               </SwiperSlide>
             ))}

@@ -48,17 +48,25 @@ export default function Hero({}: Props) {
       </div>
       <div className="w-full md:w-5/12 px-8 md:px-0">
         {data && (
-          <div className="relative">
-            <div className="book-cover" />
-            <img
-              src={data.cover}
-              alt={data.title}
-              className="h-[30rem] w-auto object-cover object-center -z-[1] border"
-              onError={(target: any) => {
-                target.currentTarget.onerror = null;
-                target.currentTarget.src = "/no-cover.jpg";
-              }}
-            />
+          <div className="flex flex-col justify-center space-y-2">
+            <div className="relative mx-auto">
+              <div className="book-cover" />
+              <img
+                src={data.cover}
+                alt={data.title}
+                className="h-[30rem] w-auto object-cover object-center -z-[1] border"
+                onError={(target: any) => {
+                  target.currentTarget.onerror = null;
+                  target.currentTarget.src = "/no-cover.jpg";
+                }}
+              />
+            </div>
+            <div>
+              <p className="text-center  text-gray-500">
+                {data.author.fullname}
+              </p>
+              <p className="text-center font-medium">{data.title}</p>
+            </div>
           </div>
         )}
       </div>
