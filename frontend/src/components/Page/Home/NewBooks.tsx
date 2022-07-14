@@ -11,7 +11,7 @@ type Props = {
 export default function NewBooks({ data }: Props) {
   return (
     <div className="px-4 md:px-12 flex flex-col md:flex-row md:space-x-24 space-y-8 md:space-y-0">
-      <div className="w-full md:w-5/12 px-16 md:px-24 relative">
+      <div className="w-full md:w-5/12 px-16 md:px-24 relative overflow-hidden pt-0 md:pt-24">
         {data && (
           <Swiper
             slidesPerView={1}
