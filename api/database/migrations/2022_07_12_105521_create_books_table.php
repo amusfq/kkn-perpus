@@ -16,7 +16,7 @@ class CreateBooksTable extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('cover')->default('/images/no-cover.webp');
+            $table->string('cover')->default('/images/no-cover.jpg');
             $table->foreignId('author_id')->constrained('authors');
             $table->timestamp('published_date');
             $table->integer('quantity');

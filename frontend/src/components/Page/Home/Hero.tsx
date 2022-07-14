@@ -37,7 +37,7 @@ export default function Hero({ data }: Props) {
               className="h-[30rem] w-auto object-cover object-center -z-[1] border"
               onError={(target: any) => {
                 target.currentTarget.onerror = null;
-                target.currentTarget.src = "/no-cover.webp";
+                target.currentTarget.src = "/no-cover.jpg";
               }}
             />
           </div>

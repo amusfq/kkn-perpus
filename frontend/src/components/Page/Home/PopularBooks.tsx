@@ -69,7 +69,7 @@ export default function PopularBooks({}: Props) {
                       className="h-[30rem] w-full object-scale-down object-center border -z-[1]"
                       onError={(target: any) => {
                         target.currentTarget.onerror = null;
-                        target.currentTarget.src = "/no-cover.webp";
+                        target.currentTarget.src = "/no-cover.jpg";
                       }}
                     />
                   </div>
