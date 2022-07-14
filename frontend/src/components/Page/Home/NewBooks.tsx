@@ -27,7 +27,7 @@ export default function NewBooks({ data }: Props) {
             {data.data.slice(0, 4).map((book) => (
               <SwiperSlide key={book.id}>
                 <div className="relative">
-                  <div className="book-cover" />
+                  <div className="book-cover select-none pointer-events-none" />
                   <img
                     key={book.id}
                     src={book.cover}

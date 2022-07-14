@@ -33,4 +33,5 @@ Route::prefix('book')->group(function () {
     Route::post('/', [BookController::class, 'create']);
     Route::get('/recent', [BookController::class, 'recent']);
     Route::get('/views', [BookController::class, 'mostView']);
+    Route::get('/random', [BookController::class, 'random']);
 });

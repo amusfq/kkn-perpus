@@ -30,6 +30,21 @@ class BookController extends Controller
         ]);
     }
 
+    public function random(Request $request) {
+        $data = Book::with('author', 'shelf', 'publisher')
+                    ->withCount('views')->inRandomOrder();
+        
+        return response()->json([
+            'meta' => [
+                'ip' => $request->ips(),
+                'userAgent' => $request->userAgent(),
+                'query' => $request->query(),
+            ],
+            "data" => $data->first(), 
+            'success' => TRUE
+        ]);
+    }
+
     public function recent(Request $request) {
         $data = Book::with('author', 'shelf', 'publisher')
                     ->withCount('views');

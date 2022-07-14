@@ -31,7 +31,7 @@ export default function Home({}: Props) {
 
   return (
     <div className="space-y-32 md:mt-16">
-      <Hero data={data} />
+      <Hero />
       <Category />
       <NewBooks data={data} />
       <PopularBooks />

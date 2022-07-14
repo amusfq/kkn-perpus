@@ -1,10 +1,29 @@
-import { BookPagination } from "../../../models/BookType";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Axios from "../../../api";
+import BookType from "../../../models/BookType";
 
-type Props = {
-  data?: BookPagination;
-};
+type Props = {};
 
-export default function Hero({ data }: Props) {
+export default function Hero({}: Props) {
+  const [data, setData] = useState<BookType>();
+
+  const getData = () => {
+    Axios.get("/book/random")
+      .then((res) => {
+        const response = res.data;
+        setData(response.data);
+      })
+      .catch((err) => {
+        const response = err.response;
+        console.log(response);
+        toast.error("Gagal mengambil data buku baru", { theme: "colored" });
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="px-4 md:px-12 flex flex-col md:flex-row md:space-x-12 mt-24">
       <div className="w-full md:w-7/12 py-12 flex items-center">
@@ -28,12 +47,12 @@ export default function Hero({ data }: Props) {
         </div>
       </div>
       <div className="w-full md:w-5/12 px-8 md:px-0">
-        {data && data.data.length > 0 && (
+        {data && (
           <div className="relative">
             <div className="book-cover" />
             <img
-              src={data.data[0].cover}
-              alt={data.data[0].title}
+              src={data.cover}
+              alt={data.title}
               className="h-[30rem] w-auto object-cover object-center -z-[1] border"
               onError={(target: any) => {
                 target.currentTarget.onerror = null;
