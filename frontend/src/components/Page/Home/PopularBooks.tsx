@@ -7,19 +7,20 @@ import { toast } from "react-toastify";
 import Axios from "../../../api";
 import { BookPagination } from "../../../models/BookType";
 import useStore from "../../../../store/store";
+import Book from "../../Book";
 
 type Props = {};
 
 export default function PopularBooks({}: Props) {
-  const {setIsLoading} = useStore();
+  const { setIsLoading } = useStore();
   const [data, setData] = useState<BookPagination>();
 
   const getData = () => {
     setIsLoading(true);
     Axios.get("/book", {
       params: {
-        filter: 'popular'
-      }
+        filter: "popular",
+      },
     })
       .then((res) => {
         const response = res.data;
@@ -29,7 +30,8 @@ export default function PopularBooks({}: Props) {
         const response = err.response;
         console.log(response);
         toast.error("Gagal mengambil data buku popular", { theme: "colored" });
-      }).finally(() => setIsLoading(false));
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -66,27 +68,7 @@ export default function PopularBooks({}: Props) {
           >
             {data.data.map((book) => (
               <SwiperSlide key={book.id}>
-                <div className="text-center space-y-2">
-                  <div className="relative">
-                    <div className="book-cover" />
-                    <img
-                      key={book.id}
-                      src={book.cover}
-                      alt={book.title}
-                      className="h-44 md:h-[30rem] w-full object-scale-down object-center border -z-[1]"
-                      onError={(target: any) => {
-                        target.currentTarget.onerror = null;
-                        target.currentTarget.src = "/no-cover.jpg";
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-center  text-gray-500">
-                      {book.author.fullname}
-                    </p>
-                    <p className="font-medium">{book.title}</p>
-                  </div>
-                </div>
+                <Book data={book} />
               </SwiperSlide>
             ))}
           </Swiper>

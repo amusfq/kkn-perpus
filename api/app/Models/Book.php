@@ -17,6 +17,7 @@ class Book extends Model
         'published_date',
         'quantity',
         'isbn',
+        'slug',
         'shelf_id',
         'publisher_id',
         'category_id'
@@ -45,6 +46,11 @@ class Book extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function language()
+    {
+        return $this->belongsTo(Language::class);
     }
 
     public function views()

@@ -21,6 +21,10 @@ class CreateBooksTable extends Migration
             $table->timestamp('published_date');
             $table->integer('quantity');
             $table->string('isbn');
+            $table->string('slug');
+            $table->text('description');
+            $table->integer('pages');
+            $table->foreignId('language_id')->constrained('languages');
             $table->foreignId('shelf_id')->constrained('shelves');
             $table->foreignId('publisher_id')->constrained('publishers');
             $table->foreignId('category_id')->constrained('categories');

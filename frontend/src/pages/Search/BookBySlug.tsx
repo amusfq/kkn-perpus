@@ -5,6 +5,8 @@ import useStore from "../../../store/store";
 import Axios from "../../api";
 import { BookPagination } from "../../models/BookType";
 import CategoryType from "../../models/CategoryType";
+import { Helmet } from "react-helmet";
+import Book from "../../components/Book";
 
 type Props = {};
 
@@ -56,51 +58,38 @@ export default function BookBySlug({}: Props) {
     if (slug) getData(slug);
   }, [slug]);
   return (
-    <div className="px-4 md:px-12 mt-24 space-y-8">
-      <div>
-        <button
-          className="outline-none flex flex-row items-center space-x-2 font-bold md:text-xl hover:text-blue-500"
-          onClick={() => navigate(-1)}
-        >
-          <i className="fa-solid fa-angle-left"></i>
-          <p>Kategori Buku {category?.name}</p>
-        </button>
-      </div>
-      {data && data.data.length > 0 ? (
-        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
-          {data.data.map((book) => (
-            <div className="text-center space-y-2" key={book.id}>
-              <div className="relative">
-                <div className="book-cover" />
-                <img
-                  src={book.cover}
-                  alt={book.title}
-                  className="h-44 md:h-full w-full object-scale-down object-center border -z-[1]"
-                  onError={(target: any) => {
-                    target.currentTarget.onerror = null;
-                    target.currentTarget.src = "/no-cover.jpg";
-                  }}
-                />
-              </div>
-              <div>
-                <p className="text-center  text-gray-500">
-                  {book.author.fullname}
-                </p>
-                <p className="font-medium">{book.title}</p>
-              </div>
-            </div>
-          ))}
+    <>
+      <Helmet>
+        <title>{`Kategori ${category?.name} - Perpustakaan Online`}</title>
+      </Helmet>
+      <div className="px-4 md:px-12 mt-24 space-y-8">
+        <div>
+          <button
+            className="outline-none flex flex-row items-center space-x-2 font-bold md:text-xl hover:text-blue-500"
+            onClick={() => navigate(-1)}
+          >
+            <i className="fa-solid fa-angle-left"></i>
+            <p>Kategori Buku {category?.name}</p>
+          </button>
         </div>
-      ) : (
-        <div className="flex items-center justify-center py-6 md:py-12">
-          <div className="w-72">
-            <img src="/no-data.svg" alt="" />
-            <h1 className="text-center font-medium text-xl">
-              Oops, sepertinya belum ada buku untuk kategori "{category?.name}"
-            </h1>
+        {data && data.data.length > 0 ? (
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+            {data.data.map((book) => (
+              <Book key={book.id} data={book} />
+            ))}
           </div>
-        </div>
-      )}
-    </div>
+        ) : (
+          <div className="flex items-center justify-center py-6 md:py-12">
+            <div className="w-72">
+              <img src="/no-data.svg" alt="" />
+              <h1 className="text-center font-medium text-xl">
+                Oops, sepertinya belum ada buku untuk kategori "{category?.name}
+                "
+              </h1>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

@@ -8,6 +8,7 @@ import Loading from "./components/Loading";
 import useStore from "./../store/store";
 import NotFound from "./pages/NotFound";
 import BookBySlug from "./pages/Search/BookBySlug";
+import BookDetail from "./pages/BookDetail";
 
 interface Props {
   children: any;
@@ -36,6 +37,7 @@ function App() {
               <Routes>
                 <Route path="/">
                   <Route index element={<Home />} />
+                  <Route path="book/:slug" element={<BookDetail />} />
                   <Route path="category/:slug" element={<BookBySlug />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>

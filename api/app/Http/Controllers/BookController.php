@@ -18,7 +18,7 @@ class BookController extends Controller
         $statusCode = 200;
         $errors = [];
 
-        $data = Book::with('author', 'shelf', 'publisher', 'category')
+        $data = Book::with('author', 'shelf', 'publisher', 'category', 'language')
                     ->withCount('views');
         $perPage = 10;
         if ($request->filled('per_page')) $perPage = $request->query('per_page');
@@ -46,13 +46,31 @@ class BookController extends Controller
         return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
+    public function getBookBySlug(Request $request, $slug) {
+        $data = "";
+        $status = TRUE;
+        $statusCode = 200;
+        $errors = [];
+
+        $data = Book::with('author', 'shelf', 'publisher', 'category', 'language')
+                    ->withCount('views')
+                    ->where('slug', $slug)
+                    ->first();
+        if (!$data) {
+            $status = FALSE;
+            $statusCode = 404;
+            $errors = ['Buku tidak ditemukan'];
+        }
+        return returnJSON($request, $data, $status, $statusCode, $errors);
+    }
+
     public function random(Request $request) {
         $data = "";
         $status = TRUE;
         $statusCode = 200;
         $errors = [];
         
-        $data = Book::with('author', 'shelf', 'publisher', 'category')
+        $data = Book::with('author', 'shelf', 'publisher', 'category', 'language')
             ->withCount('views')->inRandomOrder()->first();   
             
         return returnJSON($request, $data, $status, $statusCode, $errors);

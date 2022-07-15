@@ -46,6 +46,7 @@ Route::prefix('author')->controller(AuthorController::class)->middleware('jwt.ve
 
 Route::prefix('book')->controller(BookController::class)->group(function () {
     Route::get('/', 'index');
-    Route::post('/', 'create');
     Route::get('/random', 'random');
+    Route::get('/{slug}', 'getBookBySlug');
+    Route::post('/', 'create');
 });

@@ -1,4 +1,5 @@
 import AuthorType from "./AuthorType";
+import LanguageType from "./LanguageType";
 import PublisherType from "./PublisherType";
 import ShelfType from "./ShelfType";
 
@@ -9,12 +10,16 @@ export default interface BookType {
   published_date: string;
   quantity: number;
   isbn: string;
+  slug: string;
+  description: string;
+  pages: string;
   created_at: string;
   updated_at: string;
   views_count: number;
   author: AuthorType;
   shelf: ShelfType;
   publisher: PublisherType;
+  language: LanguageType;
 }
 
 export interface BookPagination {
