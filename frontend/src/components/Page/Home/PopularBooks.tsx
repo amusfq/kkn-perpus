@@ -29,7 +29,7 @@ export default function PopularBooks({}: Props) {
         const response = err.response;
         console.log(response);
         toast.error("Gagal mengambil data buku popular", { theme: "colored" });
-      }).then(() => setIsLoading(false));
+      }).finally(() => setIsLoading(false));
   };
 
   useEffect(() => {

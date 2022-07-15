@@ -60,19 +60,134 @@ class DatabaseSeeder extends Seeder
                 ['name' => 'DIVA Press', 'address' => $faker->address()]
             ]);
         }
+        // Generate Dummy Category
+        if (Schema::hasTable('categories')) {
+            DB::table('categories')->insert([
+                ['name' => 'Seni', 'icon' => 'images/art.png', 'slug' => 'seni'],
+                ['name' => 'Jual Beli', 'icon' => 'images/bookstore.png', 'slug' => 'jual-beli'],
+                ['name' => 'Pendidikan', 'icon' => 'images/education.png', 'slug' => 'pendidikan'],
+                ['name' => 'Otomotif', 'icon' => 'images/engineering.png', 'slug' => 'otomotif'],
+                ['name' => 'Makanan', 'icon' => 'images/food.png', 'slug' => 'makanan'],
+                ['name' => 'Humor', 'icon' => 'images/humor.png', 'slug' => 'humor'],
+                ['name' => 'Hukum', 'icon' => 'images/law.png', 'slug' => 'hukum'],
+                ['name' => 'Politik', 'icon' => 'images/politic.png', 'slug' => 'politik'],
+                ['name' => 'Sosial', 'icon' => 'images/social.png', 'slug' => 'sosial'],
+                ['name' => 'Cerita Rakyat', 'icon' => 'images/story-book.png', 'slug' => 'cerita-rakyat'],
+            ]);
+        }
         // Generate Dummy Book
         if (Schema::hasTable('books')) {
             DB::table('books')->insert([
-                ['title' => 'Filosofi Teras', 'cover' => 'images/filosofi-teras.jpeg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Intai Amfibi Marinir', 'cover' => 'images/intai-amfibi-marinir.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Junji Ito’s Cat Diary Yon and Mu', 'cover' => 'images/Junji Itos Cat Diary Yon and Mu.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Maria Beetle', 'cover' => 'images/Maria Beetle.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Kaiju No. 8 Vol. 03', 'cover' => 'images/Kaiju No. 8 Vol. 03.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'The Power of Habit', 'cover' => 'images/The Power of Habit.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Hello, Cello', 'cover' => 'images/Hello, Cello.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'One Piece 99', 'cover' => 'images/One Piece 99.jpeg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Cantik Itu Luka Edisi 20 Tahun', 'cover' => 'images/Cantik Itu Luka Edisi 20 Tahun.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()],
-                ['title' => 'Kitab Pink Jason Ranti', 'cover' => 'images/Kitab Pink Jason Ranti.jpg', 'author_id' => $faker->randomDigitNotNull(), 'published_date' => $faker->dateTime(), 'quantity' => $faker->randomDigitNotNull(), 'isbn' => $faker->isbn10(), 'shelf_id' => $faker->randomDigitNotNull(), 'publisher_id' => $faker->randomDigitNotNull()]
+                [
+                    'title' => 'Filosofi Teras', 
+                    'cover' => 'images/filosofi-teras.jpeg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Intai Amfibi Marinir', 
+                    'cover' => 'images/intai-amfibi-marinir.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Junji Ito’s Cat Diary Yon and Mu', 
+                    'cover' => 'images/Junji Itos Cat Diary Yon and Mu.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Maria Beetle', 
+                    'cover' => 'images/Maria Beetle.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Kaiju No. 8 Vol. 03', 
+                    'cover' => 'images/Kaiju No. 8 Vol. 03.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'The Power of Habit', 
+                    'cover' => 'images/The Power of Habit.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Hello, Cello', 
+                    'cover' => 'images/Hello, Cello.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'One Piece 99', 
+                    'cover' => 'images/One Piece 99.jpeg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Cantik Itu Luka Edisi 20 Tahun', 
+                    'cover' => 'images/Cantik Itu Luka Edisi 20 Tahun.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ],
+                [
+                    'title' => 'Kitab Pink Jason Ranti', 
+                    'cover' => 'images/Kitab Pink Jason Ranti.jpg', 
+                    'author_id' => $faker->randomDigitNotNull(), 
+                    'published_date' => $faker->dateTime(), 
+                    'quantity' => $faker->randomDigitNotNull(), 
+                    'isbn' => $faker->isbn10(), 
+                    'shelf_id' => $faker->randomDigitNotNull(), 
+                    'publisher_id' => $faker->randomDigitNotNull(), 
+                    'category_id' => $faker->randomDigitNotNull()
+                ]
             ]);
         }
     }

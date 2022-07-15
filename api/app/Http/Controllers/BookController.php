@@ -18,7 +18,7 @@ class BookController extends Controller
         $statusCode = 200;
         $errors = [];
 
-        $data = Book::with('author', 'shelf', 'publisher')
+        $data = Book::with('author', 'shelf', 'publisher', 'category')
                     ->withCount('views');
         $perPage = 10;
         if ($request->filled('per_page')) $perPage = $request->query('per_page');
@@ -26,6 +26,10 @@ class BookController extends Controller
             $q = $request->query('q');
             $data = $data->where('title', 'like', "%$q%")
             ->orWhere('isbn', 'like', "%$q%");
+        }
+        if ($request->filled('category_id')) {
+            $category_id = $request->query('category_id');
+            $data = $data->where('category_id', $category_id);
         }
         if ($request->filled('filter')) {
             $filter = $request->query('filter');
@@ -48,7 +52,7 @@ class BookController extends Controller
         $statusCode = 200;
         $errors = [];
         
-        $data = Book::with('author', 'shelf', 'publisher')
+        $data = Book::with('author', 'shelf', 'publisher', 'category')
             ->withCount('views')->inRandomOrder()->first();   
             
         return returnJSON($request, $data, $status, $statusCode, $errors);

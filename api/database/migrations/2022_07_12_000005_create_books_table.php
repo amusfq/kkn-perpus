@@ -23,6 +23,7 @@ class CreateBooksTable extends Migration
             $table->string('isbn');
             $table->foreignId('shelf_id')->constrained('shelves');
             $table->foreignId('publisher_id')->constrained('publishers');
+            $table->foreignId('category_id')->constrained('categories');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

@@ -8,6 +8,7 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('ping', function (Request $request) {
     return response()->json(['meta' => [
@@ -32,6 +33,11 @@ Route::prefix('user')->controller(UserController::class)->group(function () {
 
 Route::prefix('publisher')->controller(PublisherController::class)->group(function () {
     Route::get('/', 'index');
+});
+
+Route::prefix('category')->controller(CategoryController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/{slug}', 'getBySlug');
 });
 
 Route::prefix('author')->controller(AuthorController::class)->middleware('jwt.verify')->group(function () {
