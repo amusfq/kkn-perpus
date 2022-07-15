@@ -92,7 +92,14 @@ export default function BookBySlug({}: Props) {
           ))}
         </div>
       ) : (
-        "Buku tidak ditemukan"
+        <div className="flex items-center justify-center py-6 md:py-12">
+          <div className="w-72">
+            <img src="/no-data.svg" alt="" />
+            <h1 className="text-center font-medium text-xl">
+              Oops, sepertinya belum ada buku untuk kategori "{category?.name}"
+            </h1>
+          </div>
+        </div>
       )}
     </div>
   );
