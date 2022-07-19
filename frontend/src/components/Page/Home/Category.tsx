@@ -17,10 +17,10 @@ export default function Category({}: Props) {
 
   const getData = () => {
     setIsLoading(true);
-    Axios.get("/category")
+    Axios.get("/category", { params: { per_page: 99 } })
       .then((res) => {
         const response = res.data;
-        setData(response);
+        setData(response.data);
       })
       .catch((err) => {
         const response = err.response;
@@ -54,7 +54,10 @@ export default function Category({}: Props) {
           >
             {data.data.map((category) => (
               <SwiperSlide key={category.id}>
-                <Link to={`/category/${category.slug}`} className="text-center space-y-2">
+                <Link
+                  to={`/category/${category.slug}`}
+                  className="text-center space-y-2"
+                >
                   <img
                     src={category.icon}
                     alt=""

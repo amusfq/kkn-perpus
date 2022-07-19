@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
         // Generate Random User
         if (Schema::hasTable('users')) {
             \App\Models\User::factory(10)->create();
+            DB::table('users')->insert([
+                ['fullname' => 'Administrator', 'username' => 'admin', 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'],
+            ]);
         }
         // Generate Dummy Author
         if (Schema::hasTable('authors')) {

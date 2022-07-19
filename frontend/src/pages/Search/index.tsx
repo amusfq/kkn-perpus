@@ -1,0 +1,78 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import useStore from "../../../store/store";
+import Axios from "../../api";
+import { BookPagination } from "../../models/BookType";
+import CategoryType from "../../models/CategoryType";
+import { Helmet } from "react-helmet";
+import Book from "../../components/Book";
+
+type Props = {};
+
+export default function Search({}: Props) {
+  let [searchParams] = useSearchParams();
+  let q = searchParams.get("q");
+  const navigate = useNavigate();
+  const { setIsLoading } = useStore();
+  const [data, setData] = useState<BookPagination>();
+
+  const getData = (search: string) => {
+    setIsLoading(true);
+    Axios.get(`/book`, {
+      params: {
+        q: search,
+      },
+    })
+      .then((res) => {
+        const response = res.data;
+        setData(response.data);
+      })
+      .catch((err) => {
+        const response = err.response;
+        console.log(response);
+        toast.error(`Gagal mengambil data buku ${response.data.name}`, {
+          theme: "colored",
+        });
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    if (q) getData(q);
+  }, [q]);
+  return (
+    <>
+      <Helmet>
+        <title>{`Cari buku '${q}' - Perpustakaan Online`}</title>
+      </Helmet>
+      <div className="px-4 md:px-12 mt-24 space-y-8">
+        <div>
+          <button
+            className="outline-none flex flex-row items-center space-x-2 font-bold md:text-xl hover:text-blue-500"
+            onClick={() => navigate(-1)}
+          >
+            <i className="fa-solid fa-angle-left"></i>
+            <p>Cari Buku '{q}'</p>
+          </button>
+        </div>
+        {data && data.data.length > 0 ? (
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+            {data.data.map((book) => (
+              <Book key={book.id} data={book} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center py-6 md:py-12">
+            <div className="w-72">
+              <img src="/no-data.svg" alt="" />
+              <h1 className="text-center font-medium text-xl">
+                Oops, sepertinya belum ada buku untuk pencarian "{q}"
+              </h1>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}

@@ -12,6 +12,7 @@ class CategoryController extends Controller
         $status = TRUE;
         $statusCode = 200;
         $errors = [];
+        $perPage = 10;
 
         $data = Category::select();
         if ($request->filled('q')) {
@@ -19,7 +20,8 @@ class CategoryController extends Controller
             $data = $data->where('name', 'like', "%$q%")
             ->orWhere('slug', 'like', "%$q%");
         }
-        $data = $data->get();
+        if ($request->filled('per_page')) $perPage = $request->query('per_page');
+        $data = $data->paginate($perPage);
         return returnJSON($request, $data, $status, $statusCode, $errors);
     }
     public function getBySlug(Request $request) {

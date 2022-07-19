@@ -27,8 +27,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('refresh', 'refresh')->name('refresh');
 });
 
-Route::prefix('user')->controller(UserController::class)->group(function () {
+Route::prefix('user')->controller(UserController::class)->middleware('jwt.verify')->group(function () {
     Route::get('/', 'index');
+    Route::post('status', 'updateStatus');
 });
 
 Route::prefix('publisher')->controller(PublisherController::class)->group(function () {
@@ -40,7 +41,7 @@ Route::prefix('category')->controller(CategoryController::class)->group(function
     Route::get('/{slug}', 'getBySlug');
 });
 
-Route::prefix('author')->controller(AuthorController::class)->middleware('jwt.verify')->group(function () {
+Route::prefix('author')->controller(AuthorController::class)->group(function () {
     Route::get('/', 'index');
 });
 

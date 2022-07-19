@@ -9,7 +9,7 @@ import Axios from "../../api";
 import useStore from "../../../store/store";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Props {}
 
@@ -30,6 +30,7 @@ export default function Header({}: Props) {
   const { setIsLoading, user, setUser } = useStore();
   const [open, setOpen] = useState(false);
   const [responsesError, setResponsesError] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -55,6 +56,7 @@ export default function Header({}: Props) {
           theme: "colored",
         });
         setOpen(false);
+        navigate("/admin");
       })
       .catch((err) => {
         const response = err.response;
@@ -68,37 +70,41 @@ export default function Header({}: Props) {
     Cookies.remove("token");
     setUser(undefined);
     toast.success("Berhasil keluar", { theme: "colored" });
+    navigate("/");
   };
 
   return (
     <>
       <div className="px-4 md:px-12 py-2 h-16 flex flex-row items-center justify-between fixed top-0 left-0 right-0 bg-white z-40">
         <div className="w-auto h-full">
-          <img
-            src="https://dummyimage.com/130x90.jpg?text=Ini Logo"
-            alt=""
-            className="h-full w-auto"
-          />
+          <Link to="/">
+            <img src="/logo.png" alt="" className="h-full w-auto" />
+          </Link>
         </div>
         {user ? (
-          <div className="relative group">
-            <div className="flex flex-row items-center space-x-2">
-              <p>{user.fullname}</p>
-              <i className="fa-solid fa-angle-down"></i>
-            </div>
-            <div className="absolute top-full right-0 border bg-white shadow w-32 hidden group-hover:block rounded overflow-hidden">
-              <Link
-                to="/profile"
-                className="px-3 py-1 block hover:text-white hover:bg-blue-500"
-              >
-                Profile
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="px-3 py-1 w-full text-left hover:text-white hover:bg-blue-500"
-              >
-                Logout
-              </button>
+          <div className="flex flex-row space-x-4 items-center">
+            <Button to="/admin" primary>
+              Dashboard
+            </Button>
+            <div className="relative group">
+              <div className="flex flex-row items-center space-x-2">
+                <p>{user.fullname}</p>
+                <i className="fa-solid fa-angle-down"></i>
+              </div>
+              <div className="absolute top-full right-0 border bg-white shadow w-36 hidden group-hover:block rounded overflow-hidden">
+                <Link
+                  to="/profile"
+                  className="px-3 py-1 block hover:text-white hover:bg-blue-500"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1 w-full text-left hover:text-white hover:bg-blue-500"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
         ) : (

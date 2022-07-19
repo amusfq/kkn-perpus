@@ -1,6 +1,6 @@
 import create from "zustand";
-import UserType from "./../model/User";
 import { persist } from "zustand/middleware";
+import UserType from "../src/models/UserType";
 
 interface StoreState {
   isLoading: Boolean;

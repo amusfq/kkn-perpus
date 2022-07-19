@@ -22,8 +22,8 @@ export default function Button({
     <Link
       to={to}
       className={classNames(
-        "min-w-[8rem] py-2 inline-block",
-        primary ? "bg-blue-500 hover:bg-blue-500 text-white" : "",
+        "min-w-[7rem] py-2 inline-block text-center px-3",
+        primary ? "bg-blue-500 hover:bg-blue-600 text-white" : "",
         block ? "w-full" : "",
         circle ? "rounded-full" : "rounded",
         className
@@ -34,8 +34,8 @@ export default function Button({
   ) : (
     <button
       className={classNames(
-        "min-w-[8rem] py-2",
-        primary ? "bg-blue-500 hover:bg-blue-500 text-white" : "",
+        "min-w-[7rem] py-2 px-3",
+        primary ? "bg-blue-500 hover:bg-blue-600 text-white" : "",
         block ? "w-full" : "",
         circle ? "rounded-full" : "rounded",
         className

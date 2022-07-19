@@ -9,6 +9,15 @@ import useStore from "./../store/store";
 import NotFound from "./pages/NotFound";
 import BookBySlug from "./pages/Search/BookBySlug";
 import BookDetail from "./pages/BookDetail";
+import Dashboard from "./pages/Admin/Dashboard";
+import AdminLayout from "./pages/Admin";
+import User from "./pages/Admin/User";
+import Book from "./pages/Admin/Book";
+import History from "./pages/Admin/History";
+import Author from "./pages/Admin/Author";
+import Publisher from "./pages/Admin/Publisher";
+import Category from "./pages/Admin/Category";
+import Search from "./pages/Search";
 
 interface Props {
   children: any;
@@ -39,6 +48,65 @@ function App() {
                   <Route index element={<Home />} />
                   <Route path="book/:slug" element={<BookDetail />} />
                   <Route path="category/:slug" element={<BookBySlug />} />
+                  <Route path="search" element={<Search />} />
+                  <Route path="admin">
+                    <Route
+                      index
+                      element={
+                        <AdminLayout title="Dashboard">
+                          <Dashboard />
+                        </AdminLayout>
+                      }
+                    />
+                    <Route
+                      path="history"
+                      element={
+                        <AdminLayout title="Daftar Riwayat Peminjaman">
+                          <History />
+                        </AdminLayout>
+                      }
+                    />
+                    <Route
+                      path="user"
+                      element={
+                        <AdminLayout title="Daftar Pengguna">
+                          <User />
+                        </AdminLayout>
+                      }
+                    />
+                    <Route
+                      path="book"
+                      element={
+                        <AdminLayout title="Daftar Buku">
+                          <Book />
+                        </AdminLayout>
+                      }
+                    />
+                    <Route
+                      path="author"
+                      element={
+                        <AdminLayout title="Daftar Penulis">
+                          <Author />
+                        </AdminLayout>
+                      }
+                    />
+                    <Route
+                      path="category"
+                      element={
+                        <AdminLayout title="Daftar Kategori">
+                          <Category />
+                        </AdminLayout>
+                      }
+                    />
+                    <Route
+                      path="publisher"
+                      element={
+                        <AdminLayout title="Daftar Penerbit">
+                          <Publisher />
+                        </AdminLayout>
+                      }
+                    />
+                  </Route>
                   <Route path="*" element={<NotFound />} />
                 </Route>
               </Routes>
