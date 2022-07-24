@@ -11,6 +11,7 @@ class Publisher extends Model
 
     protected $fillable = [
         'name',
-        'address'
+        'address',
+        'is_deleted'
     ];
 }

@@ -11,6 +11,7 @@ class Shelf extends Model
 
     protected $fillable = [
         'name',
-        'location'
+        'location',
+        'is_deleted'
     ];
 }

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Publisher;
+use App\Models\Language;
 
-class PublisherController extends Controller
+class LanguageController extends Controller
 {
     public function index(Request $request) {
         $data = "";
@@ -14,11 +14,10 @@ class PublisherController extends Controller
         $errors = [];
         $perPage = 10;
 
-        $data = Publisher::select();
+        $data = Language::select();
         if ($request->filled('q')) {
             $q = $request->query('q');
-            $data = $data->where('name', 'like', "%$q%")
-            ->orWhere('address', 'like', "%$q%");
+            $data = $data->where('name', 'like', "%$q%");
         }
         if ($request->filled('per_page')) $perPage = $request->query('per_page');
 

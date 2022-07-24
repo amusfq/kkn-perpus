@@ -18,7 +18,7 @@ interface Values {
 }
 
 export default function User({}: Props) {
-  const { isLoading, setIsLoading, setUser } = useStore();
+  const { setIsLoading, setUser } = useStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState<UserPagination>();
   const navigate = useNavigate();
@@ -26,32 +26,6 @@ export default function User({}: Props) {
   const { register, handleSubmit } = useForm<Values>();
 
   const columns: TableColumn<UserType>[] = [
-    {
-      name: "ID",
-      width: "3rem",
-      selector: (row) => row.id,
-    },
-    {
-      name: "Nama Lengkap",
-      selector: (row) => row.fullname,
-    },
-    {
-      name: "Username",
-      selector: (row) => row.username,
-    },
-    {
-      name: "Status",
-      cell: (row) =>
-        row.status === 1 ? (
-          <span className="px-2 py-1 text-white text-xs bg-green-500 rounded">
-            Aktif
-          </span>
-        ) : (
-          <span className="px-2 py-1 text-white text-xs bg-red-500 rounded">
-            Non Aktif
-          </span>
-        ),
-    },
     {
       name: "Aksi",
       cell: (row) => (
@@ -80,6 +54,32 @@ export default function User({}: Props) {
           </button>
         </div>
       ),
+    },
+    {
+      name: "ID",
+      width: "3rem",
+      selector: (row) => row.id,
+    },
+    {
+      name: "Nama Lengkap",
+      selector: (row) => row.fullname,
+    },
+    {
+      name: "Username",
+      selector: (row) => row.username,
+    },
+    {
+      name: "Status",
+      cell: (row) =>
+        row.status === 1 ? (
+          <span className="px-2 py-1 text-white text-xs bg-green-500 rounded">
+            Aktif
+          </span>
+        ) : (
+          <span className="px-2 py-1 text-white text-xs bg-red-500 rounded">
+            Non Aktif
+          </span>
+        ),
     },
   ];
 

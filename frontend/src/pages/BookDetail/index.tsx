@@ -20,6 +20,7 @@ export default function BookDetail({}: Props) {
     Axios.get(`/book/${id}`)
       .then((res) => {
         const response = res.data;
+        Axios.get(`/book/view/${response.data.id}`);
         setData(response.data);
       })
       .catch((err) => {
@@ -87,9 +88,9 @@ export default function BookDetail({}: Props) {
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
-                      ISBN
+                      Kode Buku
                     </p>
-                    <p>{data?.isbn}</p>
+                    <p>{data?.code}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">

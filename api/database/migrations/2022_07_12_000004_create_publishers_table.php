@@ -17,6 +17,7 @@ class CreatePublishersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
+            $table->integer('is_deleted')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

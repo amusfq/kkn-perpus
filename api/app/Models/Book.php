@@ -16,11 +16,15 @@ class Book extends Model
         'author_id',
         'published_date',
         'quantity',
-        'isbn',
+        'code',
         'slug',
         'shelf_id',
         'publisher_id',
-        'category_id'
+        'category_id',
+        'description',
+        'pages',
+        'language_id',
+        'is_deleted'
     ];
 
     public function getCoverAttribute($value)

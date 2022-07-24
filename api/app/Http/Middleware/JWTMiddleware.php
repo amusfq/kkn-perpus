@@ -24,19 +24,19 @@ class JWTMiddleware extends BaseMiddleware
             $statusCode = 200;
             $errors = [];
             if ($e instanceof TokenInvalidException){
-                $errors = ['Token is invalid'];
+                $errors = ["token" => 'Token is invalid'];
                 $statusCode = 401;
                 $status = FALSE;
             }else if ($e instanceof TokenExpiredException){                
-                $errors = ['Token is expired'];
+                $errors = ["token" => 'Token is expired'];
                 $statusCode = 401;
                 $status = FALSE;
             } else if ($e instanceof UserNotDefinedException) {
-                $errors = ['User unauthorized'];
+                $errors = ["token" => 'User unauthorized'];
                 $statusCode = 401;
                 $status = FALSE;
             } else{
-                $errors = ['Authorization token not found'];
+                $errors = ["token" => 'Authorization token not found'];
                 $statusCode = 401;
                 $status = FALSE;
             }

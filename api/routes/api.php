@@ -9,6 +9,8 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\ShelfController;
 
 Route::get('ping', function (Request $request) {
     return response()->json(['meta' => [
@@ -36,18 +38,37 @@ Route::prefix('publisher')->controller(PublisherController::class)->group(functi
     Route::get('/', 'index');
 });
 
+Route::prefix('shelf')->controller(ShelfController::class)->group(function () {
+    Route::get('/', 'index');
+});
+
+
+Route::prefix('language')->controller(LanguageController::class)->group(function () {
+    Route::get('/', 'index');
+});
+
 Route::prefix('category')->controller(CategoryController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/{slug}', 'getBySlug');
+    Route::post('/', 'create');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'delete');
 });
 
 Route::prefix('author')->controller(AuthorController::class)->group(function () {
     Route::get('/', 'index');
+    Route::get('/{id}', 'getByID');
+    Route::post('/', 'create');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'delete');
 });
 
 Route::prefix('book')->controller(BookController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/random', 'random');
+    Route::get('/view/{id}', 'increaseView');
     Route::get('/{slug}', 'getBookBySlug');
     Route::post('/', 'create');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'delete');
 });

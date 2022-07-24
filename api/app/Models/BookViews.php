@@ -11,6 +11,11 @@ class BookViews extends Model
 
     protected $fillable = [
         'book_id',
-        'user_id',
+        'ip',
+        'country',
+        'city',
+        'state',
+        'long',
+        'lat'
     ];
 }

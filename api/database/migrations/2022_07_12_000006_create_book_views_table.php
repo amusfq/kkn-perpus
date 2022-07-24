@@ -11,7 +11,12 @@ class CreateBookViewsTable extends Migration
         Schema::create('book_views', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')->constrained('books');
-            $table->foreignId('user_id')->constrained('users');
+            $table->string('ip');
+            $table->string('country');
+            $table->string('city');
+            $table->string('state');
+            $table->decimal('long', 9, 6);
+            $table->decimal('lat', 8, 6);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

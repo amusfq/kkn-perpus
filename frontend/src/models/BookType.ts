@@ -9,7 +9,7 @@ export default interface BookType {
   cover: string;
   published_date: string;
   quantity: number;
-  isbn: string;
+  code: string;
   slug: string;
   description: string;
   pages: string;

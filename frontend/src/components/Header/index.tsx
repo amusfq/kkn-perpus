@@ -119,13 +119,13 @@ export default function Header({}: Props) {
       <Modal open={open} setOpen={setOpen}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="md:px-12 space-y-4 pb-12"
+          className="space-y-4 pb-12 md:w-96"
         >
           <div className="pb-4">
             <img
-              src="https://dummyimage.com/300.jpg?text=Logo"
+              src="/logo.png"
               alt=""
-              className="h-24 w-24 aspect-square mx-auto rounded"
+              className="h-40 w-40 aspect-square mx-auto rounded"
             />
           </div>
           {responsesError.length > 0 && (
@@ -139,9 +139,7 @@ export default function Header({}: Props) {
             </div>
           )}
           <div>
-            <p>Demo</p>
-            <p>Username : admin</p>
-            <p>Password : password</p>
+            <p>Username : admin | Password : password</p>
           </div>
           <Input
             label="Username"

@@ -14,6 +14,7 @@ class Category extends Model
         'name',
         'icon',
         'slug',
+        'is_deleted'
     ];
 
     public function getIconAttribute($value)

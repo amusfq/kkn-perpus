@@ -1,17 +1,16 @@
-import { forwardRef, InputHTMLAttributes } from "react";
+import { forwardRef, TextareaHTMLAttributes } from "react";
 import classNames from "./../../../Utils/classNames";
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   containerClassName?: string;
   className?: string;
   icon?: string;
   placeholder?: string;
   error?: string;
-  disabled?: boolean;
 }
 
-const Input = forwardRef<HTMLInputElement, Props>(
+const Textarea = forwardRef<HTMLTextAreaElement, Props>(
   (
     {
       label,
@@ -20,31 +19,22 @@ const Input = forwardRef<HTMLInputElement, Props>(
       icon = "",
       placeholder = "",
       error,
-      disabled,
       ...rest
     },
     ref
   ) => {
     return (
-      <div
-        className={classNames("space-y-1 group relative ", containerClassName)}
-      >
+      <div className={classNames("space-y-1 group", containerClassName)}>
         {label && <label className="text-sm font-medium">{label}</label>}
-        <div
-          className={classNames(
-            "border px-3 rounded flex flex-row items-center space-x-2 bg-gray-100 group focus-within:border-blue-500 focus-within:bg-white"
-          )}
-        >
+        <div className="border px-3 rounded flex flex-row items-center space-x-2 bg-gray-100 group focus-within:border-blue-500 focus-within:bg-white">
           {icon && <i className={classNames("text-gray-400", icon)}></i>}
-          <input
+          <textarea
             ref={ref}
             className={classNames(
-              "outline-none bg-gray-100 focus:bg-white py-2 w-full",
-              disabled ? "cursor-not-allowed" : "",
+              "outline-none bg-gray-100 focus:bg-white py-2 flex-grow",
               className
             )}
             placeholder={placeholder}
-            disabled={disabled}
             {...rest}
           />
         </div>
@@ -54,4 +44,4 @@ const Input = forwardRef<HTMLInputElement, Props>(
   }
 );
 
-export default Input;
+export default Textarea;

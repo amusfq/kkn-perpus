@@ -39,7 +39,7 @@ export default function AdminLayout({ title = "", children }: Props) {
           <div className="w-full md:w-3/12">
             <Sidebar />
           </div>
-          <div className="w-full md:w-9/12 border rounded p-4 overflow-hidden">
+          <div className="w-full md:w-9/12 border rounded p-4">
             {children}
           </div>
         </div>

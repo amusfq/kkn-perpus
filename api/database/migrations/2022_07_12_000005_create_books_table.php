@@ -18,9 +18,9 @@ class CreateBooksTable extends Migration
             $table->string('title');
             $table->string('cover')->default('/images/no-cover.jpg');
             $table->foreignId('author_id')->constrained('authors');
-            $table->timestamp('published_date');
+            $table->date('published_date');
             $table->integer('quantity');
-            $table->string('isbn');
+            $table->string('code');
             $table->string('slug');
             $table->text('description');
             $table->integer('pages');
@@ -28,6 +28,7 @@ class CreateBooksTable extends Migration
             $table->foreignId('shelf_id')->constrained('shelves');
             $table->foreignId('publisher_id')->constrained('publishers');
             $table->foreignId('category_id')->constrained('categories');
+            $table->integer('is_deleted')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

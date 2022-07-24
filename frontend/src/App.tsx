@@ -18,6 +18,9 @@ import Author from "./pages/Admin/Author";
 import Publisher from "./pages/Admin/Publisher";
 import Category from "./pages/Admin/Category";
 import Search from "./pages/Search";
+import CreateUpdateBook from "./pages/Admin/Book/CreateUpdateBook";
+import CreateUpdateCategory from "./pages/Admin/Category/CreateUpdateCategory";
+import CreateUpdateAuthor from "./pages/Admin/Author/CreateUpdateAuthor";
 
 interface Props {
   children: any;
@@ -74,30 +77,84 @@ function App() {
                         </AdminLayout>
                       }
                     />
-                    <Route
-                      path="book"
-                      element={
-                        <AdminLayout title="Daftar Buku">
-                          <Book />
-                        </AdminLayout>
-                      }
-                    />
-                    <Route
-                      path="author"
-                      element={
-                        <AdminLayout title="Daftar Penulis">
-                          <Author />
-                        </AdminLayout>
-                      }
-                    />
-                    <Route
-                      path="category"
-                      element={
-                        <AdminLayout title="Daftar Kategori">
-                          <Category />
-                        </AdminLayout>
-                      }
-                    />
+                    <Route path="book">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Buku">
+                            <Book />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Buku">
+                            <CreateUpdateBook />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":slug"
+                        element={
+                          <AdminLayout title="Ubah Buku">
+                            <CreateUpdateBook />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
+                    <Route path="author">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Penulis">
+                            <Author />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Penulis">
+                            <CreateUpdateAuthor />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":id"
+                        element={
+                          <AdminLayout title="Ubah Penulis">
+                            <CreateUpdateAuthor />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
+                    <Route path="category">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Kategori">
+                            <Category />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Kategori">
+                            <CreateUpdateCategory />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":slug"
+                        element={
+                          <AdminLayout title="Ubah Kategori">
+                            <CreateUpdateCategory />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
                     <Route
                       path="publisher"
                       element={

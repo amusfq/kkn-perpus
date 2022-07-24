@@ -18,8 +18,9 @@ interface Values {
 }
 
 export default function Category({}: Props) {
-  const { isLoading, setIsLoading, setUser } = useStore();
+  const { setIsLoading, setUser } = useStore();
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [data, setData] = useState<CategoryPagination>();
   const navigate = useNavigate();
 
@@ -27,15 +28,47 @@ export default function Category({}: Props) {
 
   const columns: TableColumn<CategoryType>[] = [
     {
-      name: "ID",
-      width: "3rem",
-      selector: (row) => row.id,
+      name: "Aksi",
+      cell: (row) => (
+        <div className="flex flex-col space-y-1">
+          <Link
+            to={`/category/${row.slug}`}
+            className="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs"
+          >
+            <p className="space-x-1">
+              <i className="fa-solid fa-eye"></i>
+              <span>Lihat</span>
+            </p>
+          </Link>
+          <Link
+            to={`/admin/category/${row.slug}`}
+            className="px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-xs"
+          >
+            <p className="space-x-1">
+              <i className="fa-solid fa-pencil"></i>
+              <span>Ubah</span>
+            </p>
+          </Link>
+          <button
+            className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs"
+            onClick={updateStatus(row)}
+          >
+            <p className="space-x-1">
+              <i className="fa-solid fa-trash"></i>
+              <span>Hapus</span>
+            </p>
+          </button>
+        </div>
+      ),
+      center: true,
+      width: "8rem",
     },
     {
       name: "Icon",
       cell: (row) => (
         <img src={row.icon} alt="" className="h-14 w-auto mx-auto" />
       ),
+      center: true,
     },
     {
       name: "Kategori",
@@ -45,58 +78,24 @@ export default function Category({}: Props) {
       name: "Slug",
       selector: (row) => row.slug,
     },
-    {
-      name: "Aksi",
-      cell: (row) => (
-        <div className="space-x-2">
-          <Link
-            to={`/category/${row.slug}`}
-            className="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs"
-          >
-            <i className="fa-solid fa-eye"></i>
-          </Link>
-          <button
-            className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs"
-            // onClick={updateStatus(row, "delete")}
-          >
-            <i className="fa-solid fa-trash"></i>
-          </button>
-        </div>
-      ),
-    },
   ];
 
-  const updateStatus = (row: CategoryType, status: string) => () => {
+  const updateStatus = (row: CategoryType) => () => {
     Swal.fire({
-      title: `Anda yakin ingin ${
-        status === "active"
-          ? "mengaktifkan"
-          : status === "delete"
-          ? "menghapus"
-          : "menonaktifkan"
-      } user ini?`,
+      title: `Anda yakin ingin menghapus kategori ${row.name}?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
     }).then((response) => {
       if (response.isConfirmed) {
         setIsLoading(true);
-        Axios.post("/user/status", {
-          user_id: row.id,
-          status: status,
-        })
+        Axios.delete(`/category/${row.id}`)
           .then(async () => {
             toast.success(
-              `Berhasil ${
-                status === "active"
-                  ? "mengaktifkan"
-                  : status === "delete"
-                  ? "menghapus"
-                  : "menonaktifkan"
-              } user`,
+              `Berhasil menghapus kategori ${row.name}`,
               { theme: "colored" }
             );
-            await getData(currentPage);
+            await getData(currentPage, perPage);
           })
           .catch((err) => {
             const response = err.response;
@@ -112,12 +111,17 @@ export default function Category({}: Props) {
     });
   };
 
-  const getData = (page: number, q: string | undefined = "") => {
+  const getData = (
+    page: number,
+    perRow: number,
+    q: string | undefined = ""
+  ) => {
     setIsLoading(true);
     Axios.get("/category", {
       params: {
         page: page,
         q: q,
+        per_page: perRow,
       },
     })
       .then((res) => {
@@ -127,44 +131,52 @@ export default function Category({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
-        response.data.errors.forEach((error: string) =>
+        const temp: string[] = Object.values(response.data.errors);
+        if (temp.includes("Token is expired")) return logout(setUser, navigate);
+        temp.forEach((error: string) =>
           toast.error(error, { theme: "colored" })
         );
-        if (response.data.errors.includes("Token is expired"))
-          logout(setUser, navigate);
+        return [];
       })
       .finally(() => setIsLoading(false));
   };
 
   const onSubmit = (data: Values) => {
-    getData(1, data.q);
+    getData(1, perPage, data.q);
   };
 
   useEffect(() => {
-    getData(currentPage);
-  }, [currentPage]);
+    getData(currentPage, perPage);
+  }, [currentPage, perPage]);
   return (
     <div className="space-y-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-row space-x-2 items-center"
-      >
-        <Input placeholder="Cari.." {...register("q")} />
-        <button className="px-3 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">
-          <i className="fa-solid fa-search"></i>
-        </button>
-      </form>
+      <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-row space-x-2 items-center"
+        >
+          <Input placeholder="Cari.." {...register("q")} />
+          <button className="px-3 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">
+            <i className="fa-solid fa-search"></i>
+          </button>
+        </form>
+        <Button primary to="/admin/category/create">
+          Tambah
+        </Button>
+      </div>
       <div className="border">
         <DataTable
           columns={columns}
           data={data?.data || []}
+          paginationTotalRows={data?.total || 0}
           highlightOnHover
           persistTableHead
           pagination
           paginationServer
-          paginationTotalRows={data?.total || 0}
           responsive
           striped
+          onChangePage={(newPage) => setCurrentPage(newPage)}
+          onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
         />
       </div>
     </div>

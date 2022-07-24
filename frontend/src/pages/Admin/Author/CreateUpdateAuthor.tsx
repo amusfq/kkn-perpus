@@ -1,0 +1,165 @@
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import useStore from "../../../../store/store";
+import Axios from "../../../api";
+import Button from "../../../components/Button";
+import Input from "../../../components/Input";
+import logout from "../../../../Utils/logout";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+type Props = {};
+
+interface Values {
+  fullname: String;
+  address: String;
+}
+
+const schema = yup
+  .object()
+  .shape({
+    fullname: yup.string().required("Nama tidak boleh kosong"),
+    address: yup.string().required("Alamat tidak boleh kosong"),
+  })
+  .required();
+
+export default function CreateUpdateAuthor({}: Props) {
+  const { setIsLoading, setUser } = useStore();
+  const { id } = useParams();
+  const [submitErrors, setSubmitErrors] = useState<string[]>([]);
+  const navigate = useNavigate();
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Values>({
+    mode: "onChange",
+    resolver: yupResolver(schema),
+  });
+
+  const getData = async (id?: string) => {
+    setIsLoading(true);
+    await Axios.get(`/author/${id}`)
+      .then((res) => {
+        const data = res.data.data;
+        reset(data);
+      })
+      .catch((err) => {
+        const response = err.response;
+        console.log(response);
+        toast.error("Gagal mengambil data penulis", { theme: "colored" });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const onSubmit = (data: any) => {
+    setIsLoading(true);
+    if (id) {
+      Axios.put(`/author/${id}`, data)
+        .then(() => {
+          Swal.fire({
+            title: "Penulis berhasil diubah",
+            icon: "success",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#3b82f6",
+          }).then(() => navigate(-1));
+        })
+        .catch((err) => {
+          const response = err.response;
+          window.scrollTo(0, 0);
+          console.log(response);
+          const temp: string[] = Object.values(response.data.errors);
+          if (temp.includes("Token is expired"))
+            return logout(setUser, navigate);
+          setSubmitErrors(temp);
+          return [];
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      Axios.post("/author", data)
+        .then(() => {
+          Swal.fire({
+            title: "Penulis berhasil diinput",
+            icon: "success",
+            showCancelButton: true,
+            cancelButtonText: "Kembali",
+            confirmButtonText: "Tambah lagi",
+            confirmButtonColor: "#3b82f6",
+          }).then((response) => {
+            if (response.isConfirmed) {
+              reset();
+            } else {
+              navigate(-1);
+            }
+          });
+        })
+        .catch((err) => {
+          const response = err.response;
+          window.scrollTo(0, 0);
+          console.log(response);
+          const temp: string[] = Object.values(response.data.errors);
+          if (temp.includes("Token is expired"))
+            return logout(setUser, navigate);
+          setSubmitErrors(temp);
+          return [];
+        })
+        .finally(() => setIsLoading(false));
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      getData(id);
+    } else {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  return (
+    <div className="space-y-4">
+      <button
+        className="outline-none flex flex-row items-center space-x-2 font-bold md:text-xl hover:text-blue-500"
+        onClick={() => navigate(-1)}
+      >
+        <i className="fa-solid fa-angle-left"></i>
+        <p>Kembali</p>
+      </button>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {submitErrors.length > 0 && (
+          <div className="px-3 py-2 bg-red-500 text-white rounded flex flex-row space-x-2">
+            <i className="fa-solid fa-triangle-exclamation pt-1"></i>
+            <div>
+              {submitErrors.map((error, idx) => (
+                <p key={idx}>{error}</p>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="grid grid-cols-3 gap-4">
+          <Input
+            label="Nama"
+            {...register("fullname")}
+            error={errors.fullname?.message}
+          />
+          <div className="col-span-2">
+            <Input
+              label="Alamat"
+              {...register("address")}
+              error={errors.address?.message}
+            />
+          </div>
+          <div className="col-span-2 flex justify-end">
+            <Button primary>Simpan</Button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

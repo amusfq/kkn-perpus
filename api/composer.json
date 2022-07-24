@@ -14,7 +14,8 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "php-open-source-saver/jwt-auth": "^1.4"
+        "php-open-source-saver/jwt-auth": "^1.4",
+        "torann/geoip": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
