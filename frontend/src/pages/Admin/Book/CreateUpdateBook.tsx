@@ -21,6 +21,8 @@ import { CategoryPagination } from "../../../models/CategoryType";
 import { ShelfPagination } from "../../../models/ShelfType";
 import Textarea from "../../../components/Input/Textarea";
 import moment from "moment";
+import isTokenException from "../../../../Utils/isTokenException";
+import generateArrayOfYears from './../../../../Utils/generateArrayOfYears';
 
 type Props = {};
 
@@ -29,7 +31,7 @@ interface Values {
   title: String;
   author_id: Number;
   publisher_id: Number;
-  published_date: Date | null;
+  published_date: Number;
   quantity: Number;
   code: String;
   slug: String;
@@ -64,28 +66,19 @@ const schema = yup
     language_id: yup.number().required("Bahasa buku tidak boleh kosong"),
     shelf_id: yup.number().required("Rak buku tidak boleh kosong"),
     published_date: yup
-      .date()
-      .nullable()
-      .transform((curr, orig) => (orig === "" ? null : curr))
-      .required("Tanggal terbit buku tidak boleh kosong"),
+      .string()
+      .required("Tahun terbit buku tidak boleh kosong"),
     quantity: yup
       .number()
       .transform((value) => (isNaN(value) ? undefined : value))
       .min(1, "Jumlah buku minimal 1")
       .required("Jumlah buku tidak boleh kosong"),
     code: yup.string().required("Kode buku tidak boleh kosong"),
-    pages: yup
-      .number()
-      .transform((value) => (isNaN(value) ? undefined : value))
-      .min(1, "Halaman buku minimal 1")
-      .required("Halaman buku tidak boleh kosong"),
-    description: yup.string().required("Deskripsi buku tidak boleh kosong"),
   })
   .required();
 
-export default function CreateUpdateBook({}: Props) {
-  const { isLoading, setIsLoading, setUser } = useStore();
-  const [data, setData] = useState<BookType>();
+export default function CreateUpdateBook({ }: Props) {
+  const { setIsLoading, setUser } = useStore();
   const { slug } = useParams();
   const [authors, setAuthors] = useState<AuthorPagination>();
   const [publishers, setPublishers] = useState<PublisherPagination>();
@@ -94,6 +87,8 @@ export default function CreateUpdateBook({}: Props) {
   const [shelve, setShelve] = useState<ShelfPagination>();
   const [submitErrors, setSubmitErrors] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  const arrayYear = generateArrayOfYears(1995) || []
 
   const {
     watch,
@@ -121,11 +116,8 @@ export default function CreateUpdateBook({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
-        const temp: string[] = Object.values(response.data.errors);
-        if (temp.includes("Token is expired")) logout(setUser, navigate);
-        temp.forEach((error: string) =>
-          toast.error(error, { theme: "colored" })
-        );
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         return [];
       })
       .finally(() => setIsLoading(false));
@@ -140,12 +132,13 @@ export default function CreateUpdateBook({}: Props) {
         book.category_id = book.category.id;
         book.language_id = book.language.id;
         book.shelf_id = book.shelf.id;
-        book.published_date = new Date(book.published_date);
         reset(book);
       })
       .catch((err) => {
         const response = err.response;
         console.log(response);
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         toast.error("Gagal mengambil data buku", { theme: "colored" });
       })
       .finally(() => {
@@ -165,7 +158,6 @@ export default function CreateUpdateBook({}: Props) {
 
   const onSubmit = (data: any) => {
     let temp = { ...data };
-    temp.published_date = moment(temp.published_date).format("YYYY-MM-DD");
     const formData = new FormData();
 
     setIsLoading(true);
@@ -185,10 +177,9 @@ export default function CreateUpdateBook({}: Props) {
           const response = err.response;
           window.scrollTo(0, 0);
           console.log(response);
-          const temp: string[] = Object.values(response.data.errors);
-          if (temp.includes("Token is expired"))
-            return logout(setUser, navigate);
-          setSubmitErrors(temp);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          setSubmitErrors(errors);
           return [];
         })
         .finally(() => setIsLoading(false));
@@ -215,10 +206,9 @@ export default function CreateUpdateBook({}: Props) {
           const response = err.response;
           window.scrollTo(0, 0);
           console.log(response);
-          const temp: string[] = Object.values(response.data.errors);
-          if (temp.includes("Token is expired"))
-            return logout(setUser, navigate);
-          setSubmitErrors(temp);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          setSubmitErrors(errors);
           return [];
         })
         .finally(() => setIsLoading(false));
@@ -239,7 +229,7 @@ export default function CreateUpdateBook({}: Props) {
       </button>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex justify-center pb-8">
-          <div className='w-32 h-48'>
+          <div className="w-32 h-48">
             <InputImage
               label="Gambar Buku"
               onChange={(e) => setValue("cover", e)}
@@ -345,12 +335,15 @@ export default function CreateUpdateBook({}: Props) {
         </div>
         <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
           <div className="w-full md:w-1/4">
-            <Datepicker
-              label="Tanggal Terbit"
-              placeholder=""
+            <Select
+              label="Tahun Terbit"
+              options={
+                arrayYear
+              }
               onChange={(e) => setValue("published_date", e)}
-              value={watch("published_date")}
               error={errors.published_date?.message}
+              placeholder="Pilih.."
+              value={watch("published_date")}
             />
           </div>
           <div className="w-full md:w-1/4">
@@ -379,7 +372,6 @@ export default function CreateUpdateBook({}: Props) {
             />
           </div>
         </div>
-        <Textarea label="Deskripsi" {...register("description")} rows={5} />
         <div className="col-span-2 flex justify-end">
           <Button primary>Simpan</Button>
         </div>

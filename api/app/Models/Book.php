@@ -21,7 +21,6 @@ class Book extends Model
         'shelf_id',
         'publisher_id',
         'category_id',
-        'description',
         'pages',
         'language_id',
         'is_deleted'
@@ -30,6 +29,11 @@ class Book extends Model
     public function getCoverAttribute($value)
     {
             return URL::to("api/$value");
+    }
+
+    public function getQuantityAttribute($value)
+    {
+            return $value - $this->hasMany(Loan::class)->where('is_returned', 0)->count();
     }
 
     public function author()
@@ -62,9 +66,24 @@ class Book extends Model
         return $this->hasMany(BookViews::class);
     }
 
+    public function borrowed() 
+    {
+        return $this->hasMany(Loan::class)->where('is_returned', 0);
+    }
+
     protected $hidden = [
         'author_id',
         'shelf_id',
         'publisher_id',
+    ];  
+
+    protected $casts = [
+        'borrowed_count' => 'integer',
+        'category_id' => 'integer',
+        'is_deleted' => 'integer',
+        'language_id' => 'integer',
+        'pages' => 'integer',
+        'views_count' => 'integer',
+        'published_date' => 'integer',
     ];
 }

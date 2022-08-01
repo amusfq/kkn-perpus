@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useStore from "../../../store/store";
@@ -6,12 +6,13 @@ import Axios from "../../api";
 import BookType from "../../models/BookType";
 import { Helmet } from "react-helmet";
 import Book from "../../components/Book";
-import moment from "moment";
+import isTokenException from "../../../Utils/isTokenException";
+import logout from "../../../Utils/logout";
 
 type Props = {};
 
-export default function BookDetail({}: Props) {
-  const { setIsLoading } = useStore();
+export default function BookDetail({ }: Props) {
+  const { setIsLoading, setUser } = useStore();
   const [data, setData] = useState<BookType>();
   const navigate = useNavigate();
   const { slug } = useParams();
@@ -26,6 +27,8 @@ export default function BookDetail({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         toast.error("Gagal mengambil data buku", { theme: "colored" });
       })
       .finally(() => {
@@ -62,17 +65,13 @@ export default function BookDetail({}: Props) {
                 <h1 className="md:text-2xl">{data?.title}</h1>
               </div>
               <div className="space-y-2">
-                <h3 className="font-medium text-lg">Deskripsi</h3>
-                <p>{data?.description}</p>
-              </div>
-              <div className="space-y-2">
                 <h3 className="font-medium text-lg">Detail</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
                       Jumlah Halaman
                     </p>
-                    <p>{data?.pages}</p>
+                    <p>{data ? data.pages : '-'}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
@@ -82,9 +81,13 @@ export default function BookDetail({}: Props) {
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
-                      Tanggal Terbit
+                      Tahun Terbit
                     </p>
-                    <p>{data? moment(data.published_date).format('DD MMM YYYY') : '-'}</p>
+                    <p>
+                      {data
+                        ? data.published_date
+                        : "-"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
@@ -93,10 +96,12 @@ export default function BookDetail({}: Props) {
                     <p>{data?.code}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-medium text-sm">
-                      Bahasa
-                    </p>
+                    <p className="text-gray-600 font-medium text-sm">Bahasa</p>
                     <p>{data?.language.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 font-medium text-sm">Dilihat</p>
+                    <p>{data?.views_count}x</p>
                   </div>
                 </div>
               </div>

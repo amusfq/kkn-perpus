@@ -14,4 +14,8 @@ class Publisher extends Model
         'address',
         'is_deleted'
     ];
+
+    protected $casts = [
+        'is_deleted' => 'integer',
+    ];
 }

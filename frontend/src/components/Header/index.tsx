@@ -138,9 +138,6 @@ export default function Header({}: Props) {
               </div>
             </div>
           )}
-          <div>
-            <p>Username : admin | Password : password</p>
-          </div>
           <Input
             label="Username"
             icon="fa-solid fa-circle-user"

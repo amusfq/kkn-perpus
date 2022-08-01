@@ -7,6 +7,8 @@ import { BookPagination } from "../../models/BookType";
 import CategoryType from "../../models/CategoryType";
 import { Helmet } from "react-helmet";
 import Book from "../../components/Book";
+import isTokenException from "../../../Utils/isTokenException";
+import logout from "../../../Utils/logout";
 
 type Props = {};
 
@@ -14,7 +16,7 @@ export default function Search({}: Props) {
   let [searchParams] = useSearchParams();
   let q = searchParams.get("q");
   const navigate = useNavigate();
-  const { setIsLoading } = useStore();
+  const { setIsLoading, setUser } = useStore();
   const [data, setData] = useState<BookPagination>();
 
   const getData = (search: string) => {
@@ -31,6 +33,8 @@ export default function Search({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         toast.error(`Gagal mengambil data buku ${response.data.name}`, {
           theme: "colored",
         });

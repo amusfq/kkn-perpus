@@ -25,6 +25,10 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    protected $casts = [
+        'status' => 'integer',
+    ];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

@@ -11,6 +11,7 @@ import logout from "../../../../Utils/logout";
 import InputImage from "../../../components/Input/InputImage";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import isTokenException from "../../../../Utils/isTokenException";
 
 type Props = {};
 
@@ -68,7 +69,9 @@ export default function CreateUpdateCategory({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
-        toast.error("Gagal mengambil data buku", { theme: "colored" });
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
+        toast.error("Gagal mengambil data kategori", { theme: "colored" });
       })
       .finally(() => {
         setIsLoading(false);
@@ -96,10 +99,9 @@ export default function CreateUpdateCategory({}: Props) {
           const response = err.response;
           window.scrollTo(0, 0);
           console.log(response);
-          const temp: string[] = Object.values(response.data.errors);
-          if (temp.includes("Token is expired"))
-            return logout(setUser, navigate);
-          setSubmitErrors(temp);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          setSubmitErrors(errors);
           return [];
         })
         .finally(() => setIsLoading(false));
@@ -126,10 +128,9 @@ export default function CreateUpdateCategory({}: Props) {
           const response = err.response;
           window.scrollTo(0, 0);
           console.log(response);
-          const temp: string[] = Object.values(response.data.errors);
-          if (temp.includes("Token is expired"))
-            return logout(setUser, navigate);
-          setSubmitErrors(temp);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          setSubmitErrors(errors);
           return [];
         })
         .finally(() => setIsLoading(false));

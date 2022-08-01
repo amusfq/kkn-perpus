@@ -15,7 +15,7 @@ class AuthorController extends Controller
         $errors = [];
         $perPage = 10;
 
-        $data = Author::select()->where('is_deleted', 0);
+        $data = Author::where('is_deleted', 0);
         if ($request->filled('q')) {
             $q = $request->query('q');
             $data = $data->where('fullname', 'like', "%$q%")

@@ -21,4 +21,8 @@ class Category extends Model
     {
             return URL::to("api/$value");
     }
+
+    protected $casts = [
+        'is_deleted' => 'integer',
+    ];
 }

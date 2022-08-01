@@ -14,4 +14,8 @@ class Language extends Model
         'is_deleted'
     ];
 
+    protected $casts = [
+        'is_deleted' => 'integer',
+    ];
+
 }

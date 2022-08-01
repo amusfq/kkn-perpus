@@ -11,7 +11,6 @@ export default interface BookType {
   quantity: number;
   code: string;
   slug: string;
-  description: string;
   pages: string;
   created_at: string;
   updated_at: string;
@@ -20,6 +19,7 @@ export default interface BookType {
   shelf: ShelfType;
   publisher: PublisherType;
   language: LanguageType;
+  borrowed_count: number;
 }
 
 export interface BookPagination {

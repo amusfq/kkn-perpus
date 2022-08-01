@@ -34,19 +34,29 @@ export default function Sidebar({}: Props) {
       to: "/admin/book",
     },
     {
+      icon: "fa-solid fa-location-dot",
+      label: "Rak Buku",
+      to: "/admin/shelf",
+    },
+    {
       icon: "fa-solid fa-folder-tree",
       label: "Kategori",
       to: "/admin/category",
     },
     {
       icon: "fa-solid fa-user-pen",
-      label: "Author",
+      label: "Penulis",
       to: "/admin/author",
     },
     {
       icon: "fa-solid fa-print",
-      label: "Publisher",
+      label: "Penerbit",
       to: "/admin/publisher",
+    },
+    {
+      icon: "fa-solid fa-language",
+      label: "Bahasa",
+      to: "/admin/language",
     },
   ];
 

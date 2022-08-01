@@ -1,35 +1,49 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
-import Loading from "./components/Loading";
+import Cookies from 'js-cookie';
+import { isExpired } from "react-jwt";
 import useStore from "./../store/store";
-import NotFound from "./pages/NotFound";
-import BookBySlug from "./pages/Search/BookBySlug";
-import BookDetail from "./pages/BookDetail";
-import Dashboard from "./pages/Admin/Dashboard";
-import AdminLayout from "./pages/Admin";
-import User from "./pages/Admin/User";
-import Book from "./pages/Admin/Book";
-import History from "./pages/Admin/History";
-import Author from "./pages/Admin/Author";
-import Publisher from "./pages/Admin/Publisher";
-import Category from "./pages/Admin/Category";
-import Search from "./pages/Search";
-import CreateUpdateBook from "./pages/Admin/Book/CreateUpdateBook";
-import CreateUpdateCategory from "./pages/Admin/Category/CreateUpdateCategory";
-import CreateUpdateAuthor from "./pages/Admin/Author/CreateUpdateAuthor";
+
+const Home = lazy(()=> import("./pages/Home"));
+const Header = lazy(()=> import("./components/Header"));
+const Footer = lazy(()=> import("./components/Footer"));
+const Loading = lazy(()=> import("./components/Loading"));
+const NotFound = lazy(()=> import("./pages/NotFound"));
+const BookBySlug = lazy(()=> import("./pages/Search/BookBySlug"));
+const BookDetail = lazy(()=> import("./pages/BookDetail"));
+const Dashboard = lazy(()=> import("./pages/Admin/Dashboard"));
+const AdminLayout = lazy(()=> import("./pages/Admin"));
+const User = lazy(()=> import("./pages/Admin/User"));
+const Book = lazy(()=> import("./pages/Admin/Book"));
+const History = lazy(()=> import("./pages/Admin/History"));
+const Author = lazy(()=> import("./pages/Admin/Author"));
+const Publisher = lazy(()=> import("./pages/Admin/Publisher"));
+const Category = lazy(()=> import("./pages/Admin/Category"));
+const Search = lazy(()=> import("./pages/Search"));
+const CreateUpdateBook = lazy(()=> import("./pages/Admin/Book/CreateUpdateBook"));
+const CreateUpdateCategory = lazy(()=> import("./pages/Admin/Category/CreateUpdateCategory"));
+const CreateUpdateAuthor = lazy(()=> import("./pages/Admin/Author/CreateUpdateAuthor"));
+const CreateUpdatePublisher = lazy(()=> import("./pages/Admin/Publisher/CreateUpdatePublisher"));
+const CreateUpdateUser = lazy(()=> import("./pages/Admin/User/CreateUpdateUser"));
+const Shelf = lazy(()=> import("./pages/Admin/Shelf"));
+const CreateUpdateShelf = lazy(()=> import("./pages/Admin/Shelf/CreateUpdateShelf"));
+const Language = lazy(() => import("./pages/Admin/Language"));
+const CreateUpdateLanguage = lazy(() => import("./pages/Admin/Language/CreateUpdateLanguage"));
 
 interface Props {
   children: any;
 }
 
 const Wrapper = ({ children }: Props) => {
-  const { setIsLoading } = useStore();
+  const { setIsLoading, setUser } = useStore();
   const location = useLocation();
+  const token = Cookies.get('token');
   useLayoutEffect(() => {
+    if (token && isExpired(token)) {
+      Cookies.remove('token');
+      setUser(undefined);
+    }
     document.documentElement.scrollTo(0, 0);
     setIsLoading(true);
   }, [location.pathname]);
@@ -40,6 +54,7 @@ function App() {
   const { isLoading } = useStore();
   return (
     <>
+      <Suspense fallback={<Loading />}>
       <BrowserRouter>
         <Wrapper>
           <>
@@ -61,22 +76,42 @@ function App() {
                         </AdminLayout>
                       }
                     />
-                    <Route
-                      path="history"
-                      element={
-                        <AdminLayout title="Daftar Riwayat Peminjaman">
-                          <History />
-                        </AdminLayout>
-                      }
-                    />
-                    <Route
-                      path="user"
-                      element={
-                        <AdminLayout title="Daftar Pengguna">
-                          <User />
-                        </AdminLayout>
-                      }
-                    />
+                    <Route path="history">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Peminjaman">
+                            <History />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
+                    <Route path="user">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Pengguna">
+                            <User />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Pengguna">
+                            <CreateUpdateUser />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":id"
+                        element={
+                          <AdminLayout title="Ubah Pengguna">
+                            <CreateUpdateUser />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
                     <Route path="book">
                       <Route
                         index
@@ -129,6 +164,32 @@ function App() {
                         }
                       />
                     </Route>
+                    <Route path="shelf">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Rak Buku">
+                            <Shelf />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Rak Buku">
+                            <CreateUpdateShelf />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":id"
+                        element={
+                          <AdminLayout title="Ubah Rak Buku">
+                            <CreateUpdateShelf />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
                     <Route path="category">
                       <Route
                         index
@@ -155,14 +216,58 @@ function App() {
                         }
                       />
                     </Route>
-                    <Route
-                      path="publisher"
-                      element={
-                        <AdminLayout title="Daftar Penerbit">
-                          <Publisher />
-                        </AdminLayout>
-                      }
-                    />
+                    <Route path="publisher">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Penerbit">
+                            <Publisher />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Penerbit">
+                            <CreateUpdatePublisher />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":id"
+                        element={
+                          <AdminLayout title="Ubah Penerbit">
+                            <CreateUpdatePublisher />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
+                    <Route path="language">
+                      <Route
+                        index
+                        element={
+                          <AdminLayout title="Daftar Bahasa">
+                            <Language />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="create"
+                        element={
+                          <AdminLayout title="Tambah Bahasa">
+                            <CreateUpdateLanguage />
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path=":id"
+                        element={
+                          <AdminLayout title="Ubah Bahasa">
+                            <CreateUpdateLanguage />
+                          </AdminLayout>
+                        }
+                      />
+                    </Route>
                   </Route>
                   <Route path="*" element={<NotFound />} />
                 </Route>
@@ -172,7 +277,8 @@ function App() {
           </>
         </Wrapper>
         <ToastContainer pauseOnFocusLoss={false} />
-      </BrowserRouter>
+        </BrowserRouter>
+      </Suspense>
     </>
   );
 }

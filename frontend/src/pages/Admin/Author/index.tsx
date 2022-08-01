@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useStore from "../../../../store/store";
+import isTokenException from "../../../../Utils/isTokenException";
 import Axios from "../../../api";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
@@ -24,7 +25,8 @@ export default function Author({}: Props) {
   const [data, setData] = useState<AuthorPagination>();
   const navigate = useNavigate();
 
-  const { register, handleSubmit } = useForm<Values>();
+  const { register, handleSubmit, watch } = useForm<Values>();
+  const watchQ = watch('q')
 
   const columns: TableColumn<AuthorType>[] = [
     {
@@ -57,7 +59,7 @@ export default function Author({}: Props) {
     {
       name: "Nama",
       selector: (row) => row.fullname,
-      width: "14rem"
+      width: "14rem",
     },
     {
       name: "Alamat",
@@ -84,11 +86,8 @@ export default function Author({}: Props) {
           .catch((err) => {
             const response = err.response;
             console.log(response);
-            response.data.errors.forEach((error: string) =>
-              toast.error(error, { theme: "colored" })
-            );
-            if (response.data.errors.includes("Token is expired"))
-              logout(setUser, navigate);
+            const errors: string[] = Object.values(response.data.errors);
+            if (isTokenException(errors)) return logout(setUser, navigate);
           })
           .finally(() => setIsLoading(false));
       }
@@ -115,11 +114,8 @@ export default function Author({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
-        const temp: string[] = Object.values(response.data.errors);
-        if (temp.includes("Token is expired")) return logout(setUser, navigate);
-        temp.forEach((error: string) =>
-          toast.error(error, { theme: "colored" })
-        );
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         return [];
       })
       .finally(() => setIsLoading(false));
@@ -148,21 +144,30 @@ export default function Author({}: Props) {
           Tambah
         </Button>
       </div>
-      <div className="border">
-        <DataTable
-          columns={columns}
-          data={data?.data || []}
-          paginationTotalRows={data?.total || 0}
-          highlightOnHover
-          persistTableHead
-          pagination
-          paginationServer
-          responsive
-          striped
-          onChangePage={(newPage) => setCurrentPage(newPage)}
-          onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
-        />
-      </div>
+      {
+        data && data.data.length > 0 ?
+          <div className="border">
+            <DataTable
+              columns={columns}
+              data={data?.data || []}
+              paginationTotalRows={data?.total || 0}
+              highlightOnHover
+              persistTableHead
+              pagination
+              paginationServer
+              responsive
+              striped
+              onChangePage={(newPage) => setCurrentPage(newPage)}
+              onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
+            />
+          </div> :
+          <div className="text-center py-4">
+            <img src="/no-data.svg" alt="" className='w-full md:w-48 mx-auto' />
+            <h1 className="text-center font-medium md:text-xl">
+              {watchQ ? `Hasil pencarian '${watchQ}' tidak ditemukan` : "Oops, sepertinya data masih kosong"}
+            </h1>
+          </div>
+      }
     </div>
   );
 }

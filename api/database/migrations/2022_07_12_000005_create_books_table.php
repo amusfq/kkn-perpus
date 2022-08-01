@@ -18,7 +18,7 @@ class CreateBooksTable extends Migration
             $table->string('title');
             $table->string('cover')->default('/images/no-cover.jpg');
             $table->foreignId('author_id')->constrained('authors');
-            $table->date('published_date');
+            $table->string('published_date');
             $table->integer('quantity');
             $table->string('code');
             $table->string('slug');

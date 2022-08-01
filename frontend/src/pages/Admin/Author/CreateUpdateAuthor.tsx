@@ -10,6 +10,7 @@ import Input from "../../../components/Input";
 import logout from "../../../../Utils/logout";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import isTokenException from "../../../../Utils/isTokenException";
 
 type Props = {};
 
@@ -52,6 +53,8 @@ export default function CreateUpdateAuthor({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         toast.error("Gagal mengambil data penulis", { theme: "colored" });
       })
       .finally(() => {
@@ -75,10 +78,9 @@ export default function CreateUpdateAuthor({}: Props) {
           const response = err.response;
           window.scrollTo(0, 0);
           console.log(response);
-          const temp: string[] = Object.values(response.data.errors);
-          if (temp.includes("Token is expired"))
-            return logout(setUser, navigate);
-          setSubmitErrors(temp);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          setSubmitErrors(errors);
           return [];
         })
         .finally(() => setIsLoading(false));
@@ -104,10 +106,9 @@ export default function CreateUpdateAuthor({}: Props) {
           const response = err.response;
           window.scrollTo(0, 0);
           console.log(response);
-          const temp: string[] = Object.values(response.data.errors);
-          if (temp.includes("Token is expired"))
-            return logout(setUser, navigate);
-          setSubmitErrors(temp);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          setSubmitErrors(errors);
           return [];
         })
         .finally(() => setIsLoading(false));
@@ -142,20 +143,22 @@ export default function CreateUpdateAuthor({}: Props) {
             </div>
           </div>
         )}
-        <div className="grid grid-cols-3 gap-4">
-          <Input
-            label="Nama"
-            {...register("fullname")}
-            error={errors.fullname?.message}
-          />
-          <div className="col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="col-span-3 md:col-span-1">
+            <Input
+              label="Nama"
+              {...register("fullname")}
+              error={errors.fullname?.message}
+            />
+          </div>
+          <div className="col-span-3 md:col-span-2">
             <Input
               label="Alamat"
               {...register("address")}
               error={errors.address?.message}
             />
           </div>
-          <div className="col-span-2 flex justify-end">
+          <div className="col-span-3 flex justify-end">
             <Button primary>Simpan</Button>
           </div>
         </div>

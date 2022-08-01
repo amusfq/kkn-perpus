@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
         $faker = \Faker\Factory::create();
         // Generate Random User
         if (Schema::hasTable('users')) {
-            \App\Models\User::factory(10)->create();
             DB::table('users')->insert([
                 ['fullname' => 'Administrator', 'username' => 'admin', 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'],
             ]);

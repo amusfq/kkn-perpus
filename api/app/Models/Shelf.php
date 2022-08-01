@@ -14,4 +14,8 @@ class Shelf extends Model
         'location',
         'is_deleted'
     ];
+
+    protected $casts = [
+        'is_deleted' => 'integer',
+    ];
 }

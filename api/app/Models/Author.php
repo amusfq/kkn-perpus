@@ -13,5 +13,9 @@ class Author extends Model
         'fullname',
         'address',
         'is_deleted'
+    ];  
+
+    protected $casts = [
+        'is_deleted' => 'integer',
     ];
 }

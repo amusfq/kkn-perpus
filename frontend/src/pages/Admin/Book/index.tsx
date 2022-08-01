@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useStore from "../../../../store/store";
+import isTokenException from "../../../../Utils/isTokenException";
 import Axios from "../../../api";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
@@ -17,14 +18,15 @@ interface Values {
   q: string;
 }
 
-export default function Book({}: Props) {
+export default function Book({ }: Props) {
   const { setIsLoading, setUser } = useStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [data, setData] = useState<BookPagination>();
   const navigate = useNavigate();
 
-  const { register, handleSubmit } = useForm<Values>();
+  const { register, handleSubmit, watch } = useForm<Values>();
+  const watchQ = watch('q');
 
   const columns: TableColumn<BookType>[] = [
     {
@@ -68,6 +70,7 @@ export default function Book({}: Props) {
       cell: (row) => (
         <img src={row.cover} alt="" className="h-24 w-auto mx-auto" />
       ),
+      width: "7rem",
       center: true,
     },
     {
@@ -86,6 +89,12 @@ export default function Book({}: Props) {
       name: "Qty",
       selector: (row) => row.quantity,
       width: "4rem",
+      center: true,
+    },
+    {
+      name: "Dipinjam",
+      selector: (row) => row.borrowed_count,
+      width: "6rem",
       center: true,
     },
     {
@@ -119,11 +128,8 @@ export default function Book({}: Props) {
           .catch((err) => {
             const response = err.response;
             console.log(response);
-            const temp: string[] = Object.values(response.data.errors);
-            if (temp.includes("Token is expired")) logout(setUser, navigate);
-            temp.forEach((error: string) =>
-              toast.error(error, { theme: "colored" })
-            );
+            const errors: string[] = Object.values(response.data.errors);
+            if (isTokenException(errors)) return logout(setUser, navigate);
             return [];
           })
           .finally(() => setIsLoading(false));
@@ -151,11 +157,8 @@ export default function Book({}: Props) {
       .catch((err) => {
         const response = err.response;
         console.log(response);
-        const temp: string[] = Object.values(response.data.errors);
-        if (temp.includes("Token is expired")) return logout(setUser, navigate);
-        temp.forEach((error: string) =>
-          toast.error(error, { theme: "colored" })
-        );
+        const errors: string[] = Object.values(response.data.errors);
+        if (isTokenException(errors)) return logout(setUser, navigate);
         return [];
       })
       .finally(() => setIsLoading(false));
@@ -184,21 +187,30 @@ export default function Book({}: Props) {
           Tambah
         </Button>
       </div>
-      <div className="border">
-        <DataTable
-          columns={columns}
-          data={data?.data || []}
-          paginationTotalRows={data?.total || 0}
-          highlightOnHover
-          persistTableHead
-          pagination
-          paginationServer
-          responsive
-          striped
-          onChangePage={(newPage) => setCurrentPage(newPage)}
-          onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
-        />
-      </div>
+      {
+        data && data.data.length > 0 ?
+          <div className="border">
+            <DataTable
+              columns={columns}
+              data={data?.data || []}
+              paginationTotalRows={data?.total || 0}
+              highlightOnHover
+              persistTableHead
+              pagination
+              paginationServer
+              responsive
+              striped
+              onChangePage={(newPage) => setCurrentPage(newPage)}
+              onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
+            />
+          </div> :
+          <div className="text-center py-4">
+            <img src="/no-data.svg" alt="" className='w-full md:w-48 mx-auto' />
+            <h1 className="text-center font-medium md:text-xl">
+              {watchQ ? `Hasil pencarian '${watchQ}' tidak ditemukan` : "Oops, sepertinya data masih kosong"}
+            </h1>
+          </div>
+      }
     </div>
   );
 }
