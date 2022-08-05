@@ -13,14 +13,14 @@ import Pagination from "../../components/Pagination";
 
 type Props = {};
 
-export default function Search({}: Props) {
+export default function Search({ }: Props) {
   let [searchParams] = useSearchParams();
   let q = searchParams.get("q");
   const navigate = useNavigate();
   const { setIsLoading, setUser } = useStore();
   const [data, setData] = useState<BookPagination>();
 
-  const getData = (page: number, search: string) => {
+  const getData = (page: number, search: string | null) => {
     setIsLoading(true);
     Axios.get(`/book`, {
       params: {

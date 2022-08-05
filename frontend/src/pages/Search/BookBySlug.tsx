@@ -38,38 +38,40 @@ export default function BookBySlug({ }: Props) {
       }).finally(() => setIsLoading(false));
   }
 
-  const getData = async (page: number, id: string) => {
-    const response: any = await getCategory(id);
-    console.log(response)
-    if (response) {
-      setIsLoading(true);
-      Axios.get(`/book`, {
-        params: {
-          category_id: response.data.id,
-          page: page,
-          per_page: 16
-        },
-      })
-        .then((res) => {
-          const response = res.data;
-          setData(response.data);
+  const getData = async (page: number, id?: string) => {
+    if (id) {
+      const response: any = await getCategory(id);
+      console.log(response)
+      if (response) {
+        setIsLoading(true);
+        Axios.get(`/book`, {
+          params: {
+            category_id: response.data.id,
+            page: page,
+            per_page: 16
+          },
         })
-        .catch((err) => {
-          const response = err.response;
-          console.log(response);
-          const errors: string[] = Object.values(response.data.errors);
-          if (isTokenException(errors)) return logout(setUser, navigate);
-          toast.error(
-            `Gagal mengambil data buku kategori ${response.data.name}`,
-            {
-              theme: "colored",
-            }
-          );
-        })
-        .finally(() => {
-          window.scrollTo(0, 0);
-          setIsLoading(false)
-        });
+          .then((res) => {
+            const response = res.data;
+            setData(response.data);
+          })
+          .catch((err) => {
+            const response = err.response;
+            console.log(response);
+            const errors: string[] = Object.values(response.data.errors);
+            if (isTokenException(errors)) return logout(setUser, navigate);
+            toast.error(
+              `Gagal mengambil data buku kategori ${response.data.name}`,
+              {
+                theme: "colored",
+              }
+            );
+          })
+          .finally(() => {
+            window.scrollTo(0, 0);
+            setIsLoading(false)
+          });
+      }
     }
   };
 
@@ -109,7 +111,7 @@ export default function BookBySlug({ }: Props) {
           </div>
         )}
         <div className='pb-8 flex justify-center'>
-          {data && slug && <Pagination links={data.links} onPageChange={(pag: number) => getData(page, slug)} />}
+          {data && slug && <Pagination links={data.links} onPageChange={(page: number) => getData(page, slug)} />}
         </div>
       </div>
     </>
