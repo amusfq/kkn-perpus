@@ -9,44 +9,24 @@ import { Helmet } from "react-helmet";
 import Book from "../../components/Book";
 import isTokenException from "../../../Utils/isTokenException";
 import logout from "../../../Utils/logout";
+import Pagination from "../../components/Pagination";
 
 type Props = {};
 
-export default function BookBySlug({}: Props) {
+export default function BookBySlug({ }: Props) {
   let { slug } = useParams();
   const navigate = useNavigate();
   const { setIsLoading, setUser } = useStore();
   const [category, setCategory] = useState<CategoryType>();
   const [data, setData] = useState<BookPagination>();
 
-  const getData = (id: string) => {
+  const getCategory = async (id: string) => {
     setIsLoading(true);
-    Axios.get(`/category/${id}`)
+    return Axios.get(`/category/${id}`)
       .then((res) => {
         const response = res.data;
         setCategory(response.data);
-        Axios.get(`/book`, {
-          params: {
-            category_id: response.data.id,
-          },
-        })
-          .then((res) => {
-            const response = res.data;
-            setData(response.data);
-          })
-          .catch((err) => {
-            const response = err.response;
-            console.log(response);
-            const errors: string[] = Object.values(response.data.errors);
-            if (isTokenException(errors)) return logout(setUser, navigate);
-            toast.error(
-              `Gagal mengambil data buku kategori ${response.data.name}`,
-              {
-                theme: "colored",
-              }
-            );
-          })
-          .finally(() => setIsLoading(false));
+        return response;
       })
       .catch((err) => {
         const response = err.response;
@@ -54,12 +34,47 @@ export default function BookBySlug({}: Props) {
         toast.error(`Gagal mengambil data kategori ${id}`, {
           theme: "colored",
         });
-        setIsLoading(false);
-      });
+        return null;
+      }).finally(() => setIsLoading(false));
+  }
+
+  const getData = async (page: number, id: string) => {
+    const response: any = await getCategory(id);
+    console.log(response)
+    if (response) {
+      setIsLoading(true);
+      Axios.get(`/book`, {
+        params: {
+          category_id: response.data.id,
+          page: page,
+          per_page: 16
+        },
+      })
+        .then((res) => {
+          const response = res.data;
+          setData(response.data);
+        })
+        .catch((err) => {
+          const response = err.response;
+          console.log(response);
+          const errors: string[] = Object.values(response.data.errors);
+          if (isTokenException(errors)) return logout(setUser, navigate);
+          toast.error(
+            `Gagal mengambil data buku kategori ${response.data.name}`,
+            {
+              theme: "colored",
+            }
+          );
+        })
+        .finally(() => {
+          window.scrollTo(0, 0);
+          setIsLoading(false)
+        });
+    }
   };
 
   useEffect(() => {
-    if (slug) getData(slug);
+    if (slug) getData(1, slug);
   }, [slug]);
   return (
     <>
@@ -93,6 +108,9 @@ export default function BookBySlug({}: Props) {
             </div>
           </div>
         )}
+        <div className='pb-8 flex justify-center'>
+          {data && slug && <Pagination links={data.links} onPageChange={(pag: number) => getData(page, slug)} />}
+        </div>
       </div>
     </>
   );

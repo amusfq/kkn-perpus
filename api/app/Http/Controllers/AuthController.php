@@ -39,27 +39,23 @@ class AuthController extends Controller
                 $errors = [ "Username atau password salah" ];
                 $status = FALSE;
             } else {
-                $data = [
-                    'user' => Auth::user(),
-                    'authorisation' => [
-                        'token' => $token,
-                        'type' => 'bearer',
-                    ]
-                ];
+                $user = Auth::user();
+                if ($user->status != 1) {
+                    $statusCode = 401;
+                    $errors = $user->status == -1 ? [ "Pengguna telah dihapus" ] : ["Pengguna dinonaktifkan, silahkan hubungi admin"] ;
+                    $status = FALSE;
+                } else {
+                    $data = [
+                        'user' => Auth::user(),
+                        'authorisation' => [
+                            'token' => $token,
+                            'type' => 'bearer',
+                        ]
+                    ];
+                }
             }
         }
-        
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => $data,
-            'errors' => $errors,
-            'success' => $status
-        ], $statusCode);
-
+        return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
     public function profile(Request $request)
@@ -68,18 +64,10 @@ class AuthController extends Controller
         $status = TRUE;
         $errors = [];
         $data = "";
-        
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => Auth::user(),
-            'errors' => $errors,
-            'success' => $status
-        ], $statusCode);
 
+        $data = Auth::user();
+        
+        return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
     public function register(Request $request){
@@ -87,46 +75,92 @@ class AuthController extends Controller
         $statusCode = 200;
         $errors = [];
 
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
+            
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-        ]);
+        if ($validator->fails()) {
+            $statusCode = 400;
+            $errors = $validator->messages();
+            $status = FALSE;
+        } else {
+            $user = User::create([
+                'name' => $request->name,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $token = Auth::login($user);
+            $token = Auth::login($user);
+            
+            $data = [
+                'user' => $user,
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                ]
+            ];
+        }
         
-        $data = [
-            'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ];
-        
-        return response()->json([
-            'meta' => [
-                'ip' => $request->ips(),
-                'userAgent' => $request->userAgent(),
-                'query' => $request->query(),
-            ],
-            "data" => $data,
-            'success' => $status
-        ], $statusCode);
+        return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
-    public function logout()
-    {
-        Auth::logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
+    public function update(Request $request) {
+        $status = TRUE;
+        $statusCode = 200;
+        $errors = [];
+
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string|max:255',
+            
         ]);
+
+        if ($validator->fails()) {
+            $statusCode = 400;
+            $errors = $validator->messages();
+            $status = FALSE;
+        } else {
+            $user = Auth::user();
+            $data = User::find($user->id);
+            $data->fullname = $request->fullname;
+            $data->save();
+        }
+        return returnJSON($request, $data, $status, $statusCode, $errors);
+    }
+
+    public function updatePassword(Request $request) {
+        $status = TRUE;
+        $statusCode = 200;
+        $errors = [];
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|confirmed|min:8'
+        ]);
+
+        if ($validator->fails()) {
+            $statusCode = 400;
+            $errors = $validator->messages();
+            $status = FALSE;
+        } else {
+            $user = Auth::user();
+            $data = User::find($user->id);
+            $data->password = Hash::make($request->password);
+            $data->save();
+        }
+        return returnJSON($request, $data, $status, $statusCode, $errors);
+    }
+
+    public function logout(Request $request)
+    {
+        $status = TRUE;
+        $statusCode = 200;
+        $errors = [];
+        $data = 'Successfully logged out';
+        Auth::logout();
+        
+        return returnJSON($request, $data, $status, $statusCode, $errors);
     }
 
     public function refresh()

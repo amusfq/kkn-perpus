@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { isExpired } from "react-jwt";
 import useStore from "./../store/store";
 
+const Profile = lazy(() => import("./pages/Admin/Profile"));
 const Home = lazy(()=> import("./pages/Home"));
 const Header = lazy(()=> import("./components/Header"));
 const Footer = lazy(()=> import("./components/Footer"));
@@ -75,7 +76,15 @@ function App() {
                           <Dashboard />
                         </AdminLayout>
                       }
-                    />
+                      />
+                      <Route
+                        path='profile'
+                        element={
+                          <AdminLayout title="Profile">
+                            <Profile />
+                          </AdminLayout>
+                        }
+                      />
                     <Route path="history">
                       <Route
                         index

@@ -93,7 +93,7 @@ export default function Header({}: Props) {
               </div>
               <div className="absolute top-full right-0 border bg-white shadow w-36 hidden group-hover:block rounded overflow-hidden">
                 <Link
-                  to="/profile"
+                  to="/admin/profile"
                   className="px-3 py-1 block hover:text-white hover:bg-blue-500"
                 >
                   Profile
@@ -119,7 +119,7 @@ export default function Header({}: Props) {
       <Modal open={open} setOpen={setOpen}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 pb-12 md:w-96"
+          className="space-y-4 pb-12"
         >
           <div className="pb-4">
             <img

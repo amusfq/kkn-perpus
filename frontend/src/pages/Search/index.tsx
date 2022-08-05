@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet";
 import Book from "../../components/Book";
 import isTokenException from "../../../Utils/isTokenException";
 import logout from "../../../Utils/logout";
+import Pagination from "../../components/Pagination";
 
 type Props = {};
 
@@ -19,11 +20,13 @@ export default function Search({}: Props) {
   const { setIsLoading, setUser } = useStore();
   const [data, setData] = useState<BookPagination>();
 
-  const getData = (search: string) => {
+  const getData = (page: number, search: string) => {
     setIsLoading(true);
     Axios.get(`/book`, {
       params: {
         q: search,
+        page: page,
+        per_page: 16
       },
     })
       .then((res) => {
@@ -39,11 +42,14 @@ export default function Search({}: Props) {
           theme: "colored",
         });
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        window.scrollTo(0, 0);
+        setIsLoading(false)
+      });
   };
 
   useEffect(() => {
-    if (q) getData(q);
+    if (q) getData(1, q);
   }, [q]);
   return (
     <>
@@ -61,7 +67,7 @@ export default function Search({}: Props) {
           </button>
         </div>
         {data && data.data.length > 0 ? (
-          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4 items-start">
             {data.data.map((book) => (
               <Book key={book.id} data={book} />
             ))}
@@ -76,6 +82,9 @@ export default function Search({}: Props) {
             </div>
           </div>
         )}
+        <div className='pb-8 flex justify-center'>
+          {data && q && <Pagination links={data.links} onPageChange={(page: number) => getData(page, q)} />}
+        </div>
       </div>
     </>
   );

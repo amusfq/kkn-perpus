@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useStore from "../../../../store/store";
 import Axios from "../../../api";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
-import BookType from "../../../models/BookType";
 import logout from "../../../../Utils/logout";
 import InputImage from "../../../components/Input/InputImage";
 import Select from "../../../components/Select";
@@ -15,12 +14,9 @@ import { AuthorPagination } from "../../../models/AuthorType";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { PublisherPagination } from "../../../models/PublisherType";
-import Datepicker from "../../../components/Input/Datepicker";
 import { LanguagePagination } from "../../../models/LanguageType";
 import { CategoryPagination } from "../../../models/CategoryType";
 import { ShelfPagination } from "../../../models/ShelfType";
-import Textarea from "../../../components/Input/Textarea";
-import moment from "moment";
 import isTokenException from "../../../../Utils/isTokenException";
 import generateArrayOfYears from './../../../../Utils/generateArrayOfYears';
 
@@ -88,7 +84,7 @@ export default function CreateUpdateBook({ }: Props) {
   const [submitErrors, setSubmitErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const arrayYear = generateArrayOfYears(1995) || []
+  const arrayYear = generateArrayOfYears(1980) || []
 
   const {
     watch,

@@ -12,6 +12,9 @@ import LoanType, { LoanPagination } from "../../../models/LoanType";
 import logout from "../../../../Utils/logout";
 import isTokenException from "../../../../Utils/isTokenException";
 import moment from "moment";
+import Modal from "../../../components/Modal";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 type Props = {};
 
@@ -19,15 +22,38 @@ interface Values {
   q: string;
 }
 
+interface Peminjaman {
+  peminjam: string;
+  book_id: number[];
+  kelas: string;
+  return_date: string;
+}
+
+
+const schema = yup
+  .object()
+  .shape({
+    peminjam: yup.string().required("Nama siswa tidak boleh kosong"),
+    book_id: yup.number().required("Buku belum dipilih"),
+    kelas: yup.string().required("Kelas tidak boleh kosong"),
+    return_date: yup.string().required("Tanggal pengembalian tidak boleh kosong"),
+  })
+  .required();
+
 export default function History({ }: Props) {
   const { setIsLoading, setUser } = useStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(true);
+  const [responsesError, setResponsesError] = useState<String[]>([])
   const [data, setData] = useState<LoanPagination>();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, watch } = useForm<Values>();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<Values>();
   const watchQ = watch('q');
+  const { register: registerPeminjam, handleSubmit: handleSubmitPeminjam, formState: { errors: errorsPeminjam } } = useForm<Peminjaman>({
+
+  });
 
   const columns: TableColumn<LoanType>[] = [
     {
@@ -147,46 +173,102 @@ export default function History({ }: Props) {
   useEffect(() => {
     getData(currentPage, perPage);
   }, [currentPage, perPage]);
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-row space-x-2 items-center"
-        >
-          <Input placeholder="Cari.." {...register("q")} />
-          <button className="px-3 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">
-            <i className="fa-solid fa-search"></i>
-          </button>
-        </form>
-        <Button primary to="/admin/user/create">
-          Tambah
-        </Button>
+    <>
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-row space-x-2 items-center"
+          >
+            <Input placeholder="Cari.." {...register("q")} />
+            <button className="px-3 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white">
+              <i className="fa-solid fa-search"></i>
+            </button>
+          </form>
+          <Button primary onClick={() => setOpenModal(true)}>
+            Tambah
+          </Button>
+        </div>
+        {
+          data && data.data.length > 0 ?
+            <div className="border">
+              <DataTable
+                columns={columns}
+                data={data?.data || []}
+                paginationTotalRows={data?.total || 0}
+                highlightOnHover
+                persistTableHead
+                pagination
+                paginationServer
+                responsive
+                striped
+                onChangePage={(newPage) => setCurrentPage(newPage)}
+                onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
+              />
+            </div> :
+            <div className="text-center py-4">
+              <img src="/no-data.svg" alt="" className='w-full md:w-48 mx-auto' />
+              <h1 className="text-center font-medium md:text-xl">
+                {watchQ ? `Hasil pencarian '${watchQ}' tidak ditemukan` : "Oops, sepertinya data masih kosong"}
+              </h1>
+            </div>
+        }
       </div>
-      {
-        data && data.data.length > 0 ?
-          <div className="border">
-            <DataTable
-              columns={columns}
-              data={data?.data || []}
-              paginationTotalRows={data?.total || 0}
-              highlightOnHover
-              persistTableHead
-              pagination
-              paginationServer
-              responsive
-              striped
-              onChangePage={(newPage) => setCurrentPage(newPage)}
-              onChangeRowsPerPage={(newPerPage) => setPerPage(newPerPage)}
-            />
-          </div> :
-          <div className="text-center py-4">
-            <img src="/no-data.svg" alt="" className='w-full md:w-48 mx-auto' />
-            <h1 className="text-center font-medium md:text-xl">
-              {watchQ ? `Hasil pencarian '${watchQ}' tidak ditemukan` : "Oops, sepertinya data masih kosong"}
-            </h1>
-          </div>
-      } 
-    </div>
+      <Modal title='Pinjam buku' size='4xl' open={openModal} setOpen={setOpenModal}>
+        <div>
+          {responsesError.length > 0 && (
+            <div className="px-3 py-2 bg-red-500 text-white rounded flex flex-row space-x-2">
+              <i className="fa-solid fa-triangle-exclamation pt-1"></i>
+              <div>
+                {responsesError.map((error, idx) => (
+                  <p key={idx}>{error}</p>
+                ))}
+              </div>
+            </div>
+          )}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 pb-12 grid grid-cols-1 md:grid-cols-4 gap-4"
+          >
+            <div className='md:col-span-2'>
+              <Input
+                label="Nama Siswa"
+                icon="fa-solid fa-circle-user"
+                {...registerPeminjam("peminjam")}
+                error={errorsPeminjam.peminjam?.message}
+                />
+            </div>
+            <div className='md:col-span-2'>
+              <Input
+                label="Nama Siswa"
+                icon="fa-solid fa-circle-user"
+                {...registerPeminjam("peminjam")}
+                error={errorsPeminjam.peminjam?.message}
+              />
+            </div>
+            {/*
+          <Input
+            label="Password"
+            icon="fa-solid fa-key"
+            type="password"
+            {...register("password")}
+            error={errors.password?.message}
+          /> */}
+            <div className='md:col-span-4'>
+              <div className='flex justify-end space-x-2'>
+                <Button basic>
+                  Kembali
+                </Button>
+                <Button primary>
+                  Simpan
+                </Button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </Modal>
+    </>
   );
 }

@@ -25,6 +25,8 @@ Route::get('images/{filename}', [ResourceController::class, 'image']);
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('profile', 'profile')->name('profile');
+    Route::put('profile', 'update');
+    Route::put('profile/password', 'updatePassword');
     Route::post('login', 'login')->name('profile');
     Route::post('register', 'register')->name('register');
     Route::post('logout', 'logout')->name('logout');
