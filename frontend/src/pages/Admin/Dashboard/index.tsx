@@ -16,6 +16,7 @@ interface DashboardType {
   publishers: number;
   categories: number;
   loans: number;
+  due_date: number;
   popular_books: BookType[]
 }
 
@@ -27,6 +28,7 @@ export default function Dashboard({ }: Props) {
     publishers: 0,
     categories: 0,
     loans: 0,
+    due_date: 0,
     popular_books: []
   });
 
@@ -90,7 +92,7 @@ export default function Dashboard({ }: Props) {
         </div>
         <div className="w-full md:w-1/3 border shadow rounded-md p-4">
           <h1 className="text-center font-medium ">Grafik Buku</h1>
-          <Chart counts={[(data.books - data.loans), data.loans]} />
+          <Chart counts={[(data.books - data.loans - data.due_date), data.loans, data.due_date]} />
         </div>
       </div>
     </div>

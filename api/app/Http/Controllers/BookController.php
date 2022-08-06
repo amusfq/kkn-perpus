@@ -79,6 +79,7 @@ class BookController extends Controller
         $data = Book::with('author', 'shelf', 'publisher', 'category', 'language')
                     ->withCount('views')
                     ->where('slug', $slug)
+                    ->where('is_deleted', 0)
                     ->first();
         if (!$data) {
             $status = FALSE;

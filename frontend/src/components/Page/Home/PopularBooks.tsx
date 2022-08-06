@@ -44,7 +44,7 @@ export default function PopularBooks({}: Props) {
         Buku yang paling sering dibaca
       </h3>
       <p className="text-xl">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+        Buku terfavorit yang sering dipinjam oleh siswa
       </p>
       <div>
         {data && (

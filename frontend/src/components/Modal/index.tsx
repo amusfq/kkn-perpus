@@ -45,7 +45,7 @@ export default function Modal({ open, setOpen, title, size = 'md', children }: P
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className={
-                classNames("relative bg-white w-full rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8", 
+                classNames("relative bg-white w-full rounded-lg text-left shadow-xl transform transition-all sm:my-8", 
                   size === 'sm' ? 'max-w-sm' : '',
                   size === 'md' ? 'max-w-md' : '',
                   size === 'lg' ? 'max-w-lg' : '',

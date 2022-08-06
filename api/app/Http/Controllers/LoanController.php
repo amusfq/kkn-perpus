@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Loan;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +21,9 @@ class LoanController extends Controller
             $q = $request->query('q');
             $data = $data->where('name', 'like', "%$q%")
             ->orWhere('location', 'like', "%$q%");
+            
         }
+        $data = $data->orderBy('created_at', 'ASC')->orderBy("return_date", "ASC");
         if ($request->filled('per_page')) $perPage = $request->query('per_page');
 
         return returnJSON($request, $data->paginate($perPage), $status, $statusCode, $errors);
@@ -43,8 +46,9 @@ class LoanController extends Controller
         $status = TRUE;
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'location' => 'required',
+            'peminjam' => 'required',
+            'kelas' => 'required',
+            'return_date' => 'required',
         ]);
         
         if ($validator->fails()) {
@@ -52,10 +56,26 @@ class LoanController extends Controller
             $status = FALSE;
             $statusCode = 400;
         } else {
-            $data = Loan::create([
-                'name' => $request->name,
-                'location' => $request->location,
-            ]);
+            if (count($request->books) == 0) {
+                $errors = "Belum ada buku dipilih";
+                $status = FALSE;
+                $statusCode = 400;
+            }
+            $data = [];
+            $user = Auth::user();
+            foreach($request->books as $book) {
+                for($i = 0; $i < $book['qty']; $i++) {
+                    array_push($data, [
+                        "book_id" => $book['id'],
+                        "user_id" => $user->id,
+                        "peminjam" => $request->peminjam,
+                        "kelas" => $request->kelas,
+                        "return_date" => $request->return_date
+                    ]);
+                }
+            }
+            Loan::insert($data);
+            $data = "Success";
         }
         return returnJSON($request, $data, $status, $statusCode, $errors);
     }

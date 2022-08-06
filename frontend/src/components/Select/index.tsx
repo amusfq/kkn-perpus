@@ -6,7 +6,7 @@ type Props = {
   onChange: (value: Number) => void;
   error?: string;
   placeholder?: string;
-  value: Number;
+  value?: Number;
 };
 
 export default function Select({
@@ -27,7 +27,7 @@ export default function Select({
         options={options}
         onChange={handleChange}
         placeholder={placeholder}
-        value={options.find((e) => e.value === value) || []}
+        value={value && options.find((e) => e.value === value) || []}
       />
       {error && <p className="text-red-500 text-xs">{error}</p>}
     </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Loan extends Model
 {
@@ -17,6 +18,12 @@ class Loan extends Model
         'kelas',
         'return_date',
     ];
+
+    public function getIsReturnedAttribute($value)
+    {
+        if ($value == 0) if ($this->return_date < Carbon::today()) return -1;
+        return $value;
+    }
 
     public function user()
     {
@@ -36,6 +43,6 @@ class Loan extends Model
     protected $casts = [
         'user_id' => 'integer',
         'book_id' => 'integer',
-        'is_deleted' => 'integer',
+        'is_returned' => 'integer',
     ];
 }

@@ -49,8 +49,7 @@ export default function Hero({}: Props) {
             Sistem informasi perpustakaan digital
           </h1>
           <p className="text-lg">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-            fugiat rem eius quas perferendis, tenetur suscipit hic sint id
+            Selamat datang di sistem informasi perpustakaan digital SDN Pacet 1. Temukan buku yang ingin anda pinjam
           </p>
           <form
             onSubmit={handleSubmit(onSubmit)}

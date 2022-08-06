@@ -126,13 +126,13 @@ export default function Book({ }: Props) {
             });
           })
           .catch((err) => {
+            setIsLoading(false)
             const response = err.response;
             console.log(response);
             const errors: string[] = Object.values(response.data.errors);
             if (isTokenException(errors)) return logout(setUser, navigate);
             return [];
           })
-          .finally(() => setIsLoading(false));
       }
     });
   };

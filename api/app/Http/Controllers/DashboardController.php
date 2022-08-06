@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Publisher;
@@ -21,7 +22,8 @@ class DashboardController extends Controller
             "authors" => Author::where('is_deleted', 0)->count(),
             "publishers" => Publisher::where('is_deleted', 0)->count(),
             "categories" => Category::where('is_deleted', 0)->count(),
-            "loans" => Loan::where('is_returned', 0)->count(),
+            "loans" => Loan::where('is_returned', 0)->whereDate('return_date', '>', Carbon::today())->count(),
+            "due_date" => Loan::where('is_returned', 0)->whereDate('return_date', '<', Carbon::today())->count(),
             "popular_books" => Book::where('is_deleted', 0)
                 ->with('author', 'shelf', 'publisher', 'category', 'language')
                 ->withCount('views')->orderBy('views_count', 'desc')->limit(5)->get(),

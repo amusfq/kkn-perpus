@@ -36,8 +36,7 @@ export default function NewBooks({ data }: Props) {
       <div className="w-full md:w-7/12 space-y-4">
         <h1 className="text-3xl font-bold">Buku terbaru</h1>
         <p className="text-xl">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          distinctio dignissimos minima in
+          Buku terbaru di perpustakaan yang sudah tersedia untuk dipinjam
         </p>
         <div className="grid grid-cols-2 gap-4">
           {data &&
