@@ -52,7 +52,7 @@ export default function Dashboard({ }: Props) {
   }, []);
   return (
     <div className='space-y-8'>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <Card
           label="Total buku"
           count={data.books}
@@ -62,7 +62,7 @@ export default function Dashboard({ }: Props) {
         <Card
           label="Total Penulis"
           count={data.authors}
-          color="border-red-500"
+          color="border-yellow-500"
           icon="fa-pen-fancy"
         />
         <Card
@@ -82,6 +82,12 @@ export default function Dashboard({ }: Props) {
           count={data.loans}
           color="border-purple-500"
           icon="fa-hands"
+        />
+        <Card
+          label="Buku Telat"
+          count={data.due_date}
+          color="border-red-500"
+          icon="fa-clock"
         />
       </div>
       <div className='flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0'>
