@@ -23,7 +23,7 @@ export default function Book({ data, className = "", hideTitle }: Props) {
           src={data.cover}
           alt={data.title}
           className={classNames(
-            "w-auto object-cover object-center -z-[1] border h-full"
+            "w-full min-w-[5rem] object-cover object-center -z-[1] border h-full min-h-[8rem] bg-gray-200"
           )}
           onError={(target: any) => {
             target.currentTarget.onerror = null;

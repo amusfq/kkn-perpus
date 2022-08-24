@@ -61,8 +61,8 @@ export default function BookDetail({ }: Props) {
             </div>
             <div className="w-2/3 py-2 space-y-6">
               <div>
-                <p className="text-gray-500">{data?.author.fullname}</p>
-                <h1 className="md:text-2xl">{data?.title}</h1>
+                <p className="text-gray-500">{data?.author.fullname || '-'}</p>
+                <h1 className="md:text-2xl">{data?.title || '-'}</h1>
               </div>
               <div className="space-y-2">
                 <h3 className="font-medium text-lg">Detail</h3>
@@ -71,13 +71,13 @@ export default function BookDetail({ }: Props) {
                     <p className="text-gray-600 font-medium text-sm">
                       Jumlah Halaman
                     </p>
-                    <p>{data ? data.pages : '-'}</p>
+                    <p>{data?.pages || '-'}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
                       Penerbit
                     </p>
-                    <p>{data?.publisher.name}</p>
+                    <p>{data?.publisher.name || '-'}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
@@ -91,17 +91,23 @@ export default function BookDetail({ }: Props) {
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">
+                      Lokasi Buku
+                    </p>
+                    <p>{data ? `${data.shelf.name} - ${data.shelf.location}` : '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 font-medium text-sm">
                       Kode Buku
                     </p>
-                    <p>{data?.code}</p>
+                    <p>{data?.code || '-'}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">Bahasa</p>
-                    <p>{data?.language.name}</p>
+                    <p>{data?.language.name || '-'}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium text-sm">Dilihat</p>
-                    <p>{data?.views_count}x</p>
+                    <p>{data?.views_count || 0}x</p>
                   </div>
                 </div>
               </div>
